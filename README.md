@@ -37,7 +37,7 @@ someDebuggingCall()
 ### Simple syntax
 
 The most basic usage is for files that only have two states, non-processed and processed.
-In this case, your directives for exclude are removed after the `preprocess` task
+In this case, your `@exclude` directives are removed after preprocessing
 
 ```html
 <body>
@@ -72,7 +72,7 @@ After build
 ### Extended html Syntax
 
 This is useful for more fine grained control of your files over multiple
-environment configurations. You have access to simple tests of any ENV variable
+environment configurations. You have access to simple tests of any variable within the context (or ENV, if not supplied)
 
 ```html
 <body>
@@ -117,7 +117,7 @@ the built file will be
 ```
 
 
-### JavaScript Syntax
+### JavaScript, C, Java Syntax
 
 Extended syntax below, but will work without specifying a test
 
@@ -127,6 +127,8 @@ normalFunction();
 superExpensiveDebugFunction()
 //@endexclude
 
+'/* @echo USERNAME */'
+
 anotherFunction();
 ```
 
@@ -135,9 +137,10 @@ Built with a NODE_ENV of production :
 ```js
 normalFunction();
 
+'jsoverson'
+
 anotherFunction();
 ```
-
 
 
 ## Configuration and Usage
@@ -162,10 +165,17 @@ pp.preprocess(text);
 
 pp.preprocess(text, {USERNAME : "Bob"});
 // -> Hi, I am Bob
+
+// Simple wrapper around fs.readFile and fs.writeFile
+pp.preprocessFile(src, dest, context, callback);
+
+// Simple wrapper around fs.readFileSync and fs.writeFileSync
+pp.preprocessFileSync(src, dest, context);
+
 ```
 
 ## Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [grunt][grunt].
+In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using jshint
 
 ## Release History
 
