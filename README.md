@@ -77,7 +77,7 @@ environment configurations. You have access to simple tests of any variable with
 ```html
 <body>
     <!-- @if NODE_ENV!='production' -->
-    <header>Your on dev!</header>
+    <header>You're on dev!</header>
     <!-- @endif -->
 
     <!-- @if NODE_ENV='production' -->
@@ -108,7 +108,7 @@ the built file will be
 
 ```html
 <body>
-    <header>Your on dev!</header>
+    <header>You're on dev!</header>
 
     <script>
     var fingerprint = '' || 'DEFAULT';
