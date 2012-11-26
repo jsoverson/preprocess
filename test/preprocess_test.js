@@ -71,6 +71,21 @@ exports['preprocess'] = {
 
     test.done();
   },
+  'preprocess multiple html directives inline': function(test) {
+    test.expect(2);
+
+    var input,expected,settings;
+
+    input = "a<!-- @echo FOO -->b<!-- @echo BAR -->c";
+    expected = "a1b2c";
+    test.equal(pp.preprocess(input, { FOO: 1, BAR : 2}), expected, 'Should process without overreaching');
+
+    input = "a/* @echo FOO */b/* @echo BAR */c";
+    expected = "a1b2c";
+    test.equal(pp.preprocess(input, { FOO: 1, BAR : 2}, 'js'), expected, 'Should process without overreaching (js)');
+
+    test.done();
+  },
   'preprocess javascript': function(test) {
     test.expect(5);
 
