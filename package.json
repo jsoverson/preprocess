@@ -1,7 +1,7 @@
 {
   "name": "preprocess",
   "description": "Preprocess directives in HTML, JavaScript, etc directives based off variable context",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/onehealth/preprocess",
   "author": {
     "name": "Jarrod Overson",
