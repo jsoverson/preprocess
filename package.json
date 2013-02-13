@@ -32,8 +32,10 @@
     "lodash": "~0.9.1"
   },
   "devDependencies": {
-    "grunt": "~0.4.0a",
-    "nodeunit": "~0.7.4"
+    "grunt": "~0.4.0rc7",
+    "nodeunit": "~0.7.4",
+    "grunt-contrib-jshint": "~0.1.1rc6",
+    "grunt-contrib-nodeunit": "~0.1.2rc6"
   },
   "keywords": [
     "directive",

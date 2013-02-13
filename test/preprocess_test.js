@@ -160,6 +160,18 @@ exports['preprocess'] = {
 
     test.done();
   },
+  'preprocess sequential @ifs': function(test) {
+    test.expect(1);
+
+    var input,expected,settings;
+
+    input = "a<!-- @if NODE_ENV=='production' -->b<!-- @endif -->c" +
+            "d<!-- @if NODE_ENV=='production' -->e<!-- @endif -->f";
+    expected = "abcdef";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should process 2 sequential @ifs');
+
+    test.done();
+  },
   'simple preprocess same line': function(test) {
     test.expect(1);
 
@@ -235,11 +247,11 @@ exports['preprocess'] = {
 
     var input,expected,settings;
     input = "a<!-- @include include.txt -->c";
-    expected = "a!foobar!\nc";
+    expected = "a!foobar!!bazqux!\nc";
     test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should include files');
 
-    input = "a/* @include include.txt */c";
-    expected = "a!foobar!\nc";
+    input = "a/* @include static.txt */c";
+    expected = "a!bazqux!c";
     test.equal(pp.preprocess(input, { srcDir : 'test'},'js'), expected, 'Should include files (js)');
 
     test.done();
@@ -274,8 +286,8 @@ exports['preprocess'] = {
     var input,expected,settings;
 
     expected = "a0xDEADBEEFb";
-    pp.preprocessFile('test/processFileTest.html', 'test/processFileTest.dest.html', { TEST : '0xDEADBEEF'}, function(){
-      test.equal(fs.readFileSync('test/processFileTest.dest.html').toString(), expected, 'Should process a file to disk');
+    pp.preprocessFile('test/fixtures/processFileTest.html', 'test/tmp/processFileTest.dest.html', { TEST : '0xDEADBEEF'}, function(){
+      test.equal(fs.readFileSync('test/tmp/processFileTest.dest.html').toString(), expected, 'Should process a file to disk');
 
       test.done();
     })
@@ -286,8 +298,8 @@ exports['preprocess'] = {
     var input,expected,settings;
 
     expected = "aa0xDEADBEEFbb";
-    pp.preprocessFileSync('test/processFileSyncTest.html', 'test/processFileSyncTest.dest.html', { TEST : '0xDEADBEEF'});
-    var actual = fs.readFileSync('test/processFileSyncTest.dest.html').toString()
+    pp.preprocessFileSync('test/fixtures/processFileSyncTest.html', 'test/tmp/processFileSyncTest.dest.html', { TEST : '0xDEADBEEF'});
+    var actual = fs.readFileSync('test/tmp/processFileSyncTest.dest.html').toString()
     test.equal(actual, expected, 'Should process a file to disk');
     test.done();
   }

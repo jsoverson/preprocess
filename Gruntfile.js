@@ -4,46 +4,27 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
-    test: {
-      files: ['test/**/*_test.js']
-    },
-    lint: {
-      files: ['Gruntfile.js', 'tasks/**/*.js', '<config:test.files>']
-    },
-    watch: {
-      files: '<config:lint.files>',
-      tasks: 'default'
-    },
-    preprocess : {
-      html : {
-        src : 'test/test.html',
-        dest : 'test/test.processed.html'
+    nodeunit: {
+      preprocess : {
+        src: ['test/preprocess_test.js']
       },
-      js : {
-        src : 'test/test.js',
-        dest : 'test/test.processed.js'
-      }
+//      parser : {
+//        src: ['test/parser_test.js']
+//      }
     },
     jshint: {
       options: {
-        curly: true,
-        eqeqeq: true,
-        immed: true,
-        latedef: true,
-        newcap: true,
-        noarg: true,
-        sub: true,
-        undef: true,
-        boss: true,
-        eqnull: true,
-        node: true,
-        es5: true
+        jshintrc : '.jshintrc'
       },
-      globals: {}
+      lib : ['lib/**/*.js']
     }
   });
 
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-nodeunit');
+
   // Default task.
-  grunt.registerTask('default', 'test');
+  grunt.registerTask('test', ['jshint', 'nodeunit']);
+  grunt.registerTask('default', ['test']);
 
 };
