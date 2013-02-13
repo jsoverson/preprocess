@@ -179,6 +179,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+ - 1.1.0 Added deep inclusion, fixed sequential ifs
  - 1.0.1 Fixed multiple inline echo statements
  - 1.0.0 Pulled from grunt-preprocess to stand alone
 
