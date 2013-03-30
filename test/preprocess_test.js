@@ -133,6 +133,46 @@ exports['preprocess'] = {
 
     test.done();
   },
+  'preprocess coffeescript': function(test) {
+    test.expect(4);
+
+    var input, expected, settings;
+
+    input = "a\n" +
+      "# @if NODE_ENV!='production'\n" +
+      "b\n" +
+      "# @endif  \n"+
+      "c";
+    expected = "a\n\nc";
+    test.equal(pp.preprocess(input, {NODE_ENV: 'production'}, 'coffee'), expected, 'Should exclude if match');
+
+    input = "a\n" +
+      "# @if NODE_ENV!='production'\n" +
+      "b\n" +
+      "# @endif  \n"+
+      "c";
+    expected = "a\n\nb\n\nc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}, 'coffee'), expected, 'Should not exclude if not match');
+
+    input = "a\n" +
+      "# @if NODE_ENV=='production'\n" +
+      "b\n" +
+      "# @endif\n" +
+      "c";
+    expected = "a\n\nb\n\nc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'production'}, 'coffee'), expected, 'Should include if match');
+
+
+    input = "a\n" +
+      "# @if NODE_ENV=='production'\n" +
+      "b\n" +
+      "# @endif\n" +
+      "c";
+    expected = "a\n\nc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}, 'coffee'), expected, 'Should not include if not match');
+
+    test.done();
+  },
   'preprocess html same line': function(test) {
     test.expect(4);
 
