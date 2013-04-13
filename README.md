@@ -117,7 +117,7 @@ the built file will be
 ```
 
 
-### JavaScript, C, Java Syntax
+### JavaScript, CSS, C, Java Syntax
 
 Extended syntax below, but will work without specifying a test
 
@@ -142,6 +142,30 @@ normalFunction();
 anotherFunction();
 ```
 
+CSS example
+
+```css
+body {
+/* @if NODE_ENV=='development' */
+  background-color: red;
+/* @endif */
+
+}
+// @include util.css
+```
+
+(CSS preprocessing supports single line comment style directives)
+
+
+
+### Shell, PHP
+
+```bash
+#!/bin/bash
+
+# @include util.sh
+
+```
 
 ## Configuration and Usage
 
