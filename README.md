@@ -116,6 +116,14 @@ the built file will be
 </body>
 ```
 
+You can also have conditional blocks that are hidden by default by using the
+fictional `!>` end tag instead of `-->` after your condition:
+
+```html
+<!-- @if true !>
+<p>Process was run!</p>
+<!-- @endif -->
+```
 
 ### JavaScript, CSS, C, Java Syntax
 
