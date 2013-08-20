@@ -352,12 +352,16 @@ exports['preprocess'] = {
     test.done();
   },
   'include files': function(test) {
-    test.expect(2);
+    test.expect(3);
 
     var input,expected,settings;
     input = "a<!-- @include include.txt -->c";
-    expected = "a!foobar!!bazqux!\nc";
+    expected = "a!foobar!!bazqux!c";
     test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should include files');
+
+    input = "a<!-- @include includenewline.txt -->c";
+    expected = "a!foobar!\n c";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should include files and indent if ending with a newline');
 
     input = "a/* @include static.txt */c";
     expected = "a!bazqux!c";
