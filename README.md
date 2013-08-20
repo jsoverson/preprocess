@@ -1,4 +1,4 @@
-# preprocess  [![Build Status](https://secure.travis-ci.org/onehealth/preprocess.png?branch=master)](http://travis-ci.org/onehealth/preprocess)
+# preprocess  [![Build Status](https://travis-ci.org/jsoverson/preprocess.png?branch=master)](https://travis-ci.org/jsoverson/preprocess)
 
 Preprocess HTML, JavaScript, and other files with directives based off custom or ENV configuration
 
