@@ -40,7 +40,7 @@ exports['preprocess'] = {
       "b\n" +
       "<!-- @endif -->\n" +
       "c";
-    expected = "a\n\nc";
+    expected = "a\nc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should exclude if match');
 
     input = "a\n" +
@@ -48,7 +48,7 @@ exports['preprocess'] = {
       "b\n" +
       "<!-- @endif -->\n" +
       "c";
-    expected = "a\n\nb\n\nc";
+    expected = "a\nb\nc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}), expected, 'Should not exclude if not match');
 
     input = "a\n" +
@@ -56,7 +56,7 @@ exports['preprocess'] = {
       "b\n" +
       "<!-- @endif -->\n" +
       "c";
-    expected = "a\n\nc";
+    expected = "a\nc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should exclude if match (bang)');
 
     input = "a\n" +
@@ -64,7 +64,7 @@ exports['preprocess'] = {
       "b\n" +
       "<!-- @endif -->\n" +
       "c";
-    expected = "a\n\nb\n\nc";
+    expected = "a\nb\nc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}), expected, 'Should not exclude if not match (bang)');
 
     input = "a\n" +
@@ -72,7 +72,7 @@ exports['preprocess'] = {
       "b\n" +
       "<!-- @endif -->\n" +
       "c";
-    expected = "a\n\nb\n\nc";
+    expected = "a\nb\nc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should include if match');
 
     input = "a\n" +
@@ -80,7 +80,7 @@ exports['preprocess'] = {
       "b\n" +
       "<!-- @endif -->\n" +
       "c";
-    expected = "a\n\nc";
+    expected = "a\nc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}), expected, 'Should not include if not match');
 
     input = "a\n" +
@@ -88,7 +88,7 @@ exports['preprocess'] = {
       "b\n" +
       "<!-- @endif -->\n" +
       "c";
-    expected = "a\n\nb\n\nc";
+    expected = "a\nb\nc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should include if match (bang)');
 
     input = "a\n" +
@@ -96,7 +96,7 @@ exports['preprocess'] = {
       "b\n" +
       "<!-- @endif -->\n" +
       "c";
-    expected = "a\n\nc";
+    expected = "a\nc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}), expected, 'Should not include if not match (bang)');
 
     test.done();
@@ -128,7 +128,7 @@ exports['preprocess'] = {
       "b\n" +
       "// @endif  \n" +
       "c";
-    expected = "a\n\nc";
+    expected = "a\nc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'production'}, 'js'), expected, 'Should exclude if match');
 
 
@@ -137,7 +137,7 @@ exports['preprocess'] = {
       "b\n" +
       "// @endif \n" +
       "c";
-    expected = "a\n\nb\n\nc";
+    expected = "a\nb\nc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}, 'js'), expected, 'Should not exclude if not match');
 
     input = "a\n" +
@@ -145,7 +145,7 @@ exports['preprocess'] = {
       "b\n" +
       "// @endif\n" +
       "c";
-    expected = "a\n\nb\n\nc";
+    expected = "a\nb\nc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'production'}, 'js'), expected, 'Should include if match');
 
 
@@ -154,7 +154,7 @@ exports['preprocess'] = {
       "b\n" +
       "// @endif\n" +
       "c";
-    expected = "a\n\nc";
+    expected = "a\nc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}, 'js'), expected, 'Should not include if not match');
 
     input = "a/* @if NODE_ENV=='production' */b/* @endif */c";
@@ -173,7 +173,7 @@ exports['preprocess'] = {
       "b\n" +
       "# @endif  \n"+
       "c";
-    expected = "a\n\nc";
+    expected = "a\nc";
     test.equal(pp.preprocess(input, {NODE_ENV: 'production'}, 'coffee'), expected, 'Should exclude if match');
 
     input = "a\n" +
@@ -181,7 +181,7 @@ exports['preprocess'] = {
       "b\n" +
       "# @endif  \n"+
       "c";
-    expected = "a\n\nb\n\nc";
+    expected = "a\nb\nc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}, 'coffee'), expected, 'Should not exclude if not match');
 
     input = "a\n" +
@@ -189,7 +189,7 @@ exports['preprocess'] = {
       "b\n" +
       "# @endif\n" +
       "c";
-    expected = "a\n\nb\n\nc";
+    expected = "a\nb\nc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'production'}, 'coffee'), expected, 'Should include if match');
 
 
@@ -198,7 +198,7 @@ exports['preprocess'] = {
       "b\n" +
       "# @endif\n" +
       "c";
-    expected = "a\n\nc";
+    expected = "a\nc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}, 'coffee'), expected, 'Should not include if not match');
 
     test.done();
