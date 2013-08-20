@@ -2,7 +2,7 @@
   "name": "preprocess",
   "description": "Preprocess directives in HTML, JavaScript, etc directives based off variable context",
   "version": "2.0.0",
-  "homepage": "https://github.com/onehealth/preprocess",
+  "homepage": "https://github.com/jsoverson/preprocess",
   "author": {
     "name": "Jarrod Overson",
     "email": "jsoverson@gmail.com",
@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/onehealth/preprocess.git"
+    "url": "git://github.com/jsoverson/preprocess.git"
   },
   "bugs": {
-    "url": "https://github.com/onehealth/preprocess/issues"
+    "url": "https://github.com/jsoverson/preprocess/issues"
   },
   "licenses": [
     {
       "type": "Apache 2.0",
-      "url": "https://github.com/onehealth/preprocess/blob/master/LICENSE"
+      "url": "https://github.com/jsoverson/preprocess/blob/master/LICENSE"
     }
   ],
   "main": "lib/preprocess.js",
