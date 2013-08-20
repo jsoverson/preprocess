@@ -370,13 +370,17 @@ exports['preprocess'] = {
     test.done();
   },
   'echo': function(test) {
-    test.expect(1);
+    test.expect(2);
 
     var input,expected,settings;
 
     input = "a<!-- @echo FINGERPRINT -->c";
     expected = "a0xDEADBEEFc";
     test.equal(pp.preprocess(input, { FINGERPRINT: '0xDEADBEEF'}), expected, 'Should include echo statement');
+
+    input = "a<!-- @echo 'FOO' -->c";
+    expected = "aFOOc";
+    test.equal(pp.preprocess(input), expected, 'Should echo strings');
 
     test.done();
   },

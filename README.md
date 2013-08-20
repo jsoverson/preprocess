@@ -211,7 +211,7 @@ pp.preprocessFileSync(src, dest, context);
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using jshint
 
 ## Release History
-
+ - 2.0.0 Added ability to echo strings, added conditional comments, removed lodash, merged 17, 13, 15, 16
  - 1.2.0 Added processing for hash-style comments (via @marsch). Added more file aliases.
  - 1.1.0 Added deep inclusion, fixed sequential ifs
  - 1.0.1 Fixed multiple inline echo statements

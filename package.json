@@ -28,14 +28,10 @@
   "scripts": {
     "test": "grunt test"
   },
-  "dependencies": {
-    "lodash": "~0.9.1"
-  },
   "devDependencies": {
-    "grunt": "~0.4.0rc7",
-    "nodeunit": "~0.7.4",
-    "grunt-contrib-jshint": "~0.1.1rc6",
-    "grunt-contrib-nodeunit": "~0.1.2rc6"
+    "grunt-contrib-jshint": "~0.6.3",
+    "grunt": "~0.4.1",
+    "grunt-contrib-nodeunit": "~0.2.0"
   },
   "keywords": [
     "directive",
