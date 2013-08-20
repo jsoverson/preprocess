@@ -63,7 +63,8 @@ After build
  - `@ifndef VAR` / `@endif`
    This will include the enclosed block if VAR is not defined (typeof === 'undefined')
  - `@include`
-   This will include the source from an external file
+   This will include the source from an external file. If the included source ends with a newline then the
+   following line will be space indented to the level the @include was found.
  - `@exclude` / `@endexclude`
    This will remove the enclosed block upon processing
  - `@echo VAR`
