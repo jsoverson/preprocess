@@ -29,7 +29,7 @@ exports['preprocess'] = {
     done();
   },
   'preprocess html': function(test) {
-    test.expect(8);
+    test.expect(12);
 
     // tests here
 
@@ -68,6 +68,22 @@ exports['preprocess'] = {
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}), expected, 'Should not exclude if not match (bang)');
 
     input = "a\n" +
+      "<!-- @if NODE_ENV!='production' !>\n" +
+      "b\n" +
+      "<! @endif -->\n" +
+      "c";
+    expected = "a\nc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should exclude if match (bangbang)');
+
+    input = "a\n" +
+      "<!-- @if NODE_ENV!='production' !>\n" +
+      "b\n" +
+      "<! @endif -->\n" +
+      "c";
+    expected = "a\nb\nc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}), expected, 'Should not exclude if not match (bangbang)');
+
+    input = "a\n" +
       "<!-- @if NODE_ENV=='production' -->\n" +
       "b\n" +
       "<!-- @endif -->\n" +
@@ -98,6 +114,22 @@ exports['preprocess'] = {
       "c";
     expected = "a\nc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}), expected, 'Should not include if not match (bang)');
+
+    input = "a\n" +
+      "<!-- @if NODE_ENV=='production' !>\n" +
+      "b\n" +
+      "<! @endif -->\n" +
+      "c";
+    expected = "a\nb\nc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should include if match (bangbang)');
+
+    input = "a\n" +
+      "<!-- @if NODE_ENV=='production' !>\n" +
+      "b\n" +
+      "<! @endif -->\n" +
+      "c";
+    expected = "a\nc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}), expected, 'Should not include if not match (bangbang)');
 
     test.done();
   },
@@ -204,7 +236,7 @@ exports['preprocess'] = {
     test.done();
   },
   'preprocess html same line': function(test) {
-    test.expect(8);
+    test.expect(12);
 
     // tests here
 
@@ -226,6 +258,14 @@ exports['preprocess'] = {
     expected = "abc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}), expected, 'Should not exclude if not match (bang)');
 
+    input = "a<!-- @if NODE_ENV!='production' !>b<! @endif -->c";
+    expected = "ac";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should exclude if match (bangbang)');
+
+    input = "a<!-- @if NODE_ENV!='production' !>b<! @endif -->c";
+    expected = "abc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}), expected, 'Should not exclude if not match (bangbang)');
+
     input = "a<!-- @if NODE_ENV=='production' -->b<!-- @endif -->c";
     expected = "abc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should include if match');
@@ -242,10 +282,18 @@ exports['preprocess'] = {
     expected = "ac";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}), expected, 'Should not include if not match (bang)');
 
+    input = "a<!-- @if NODE_ENV=='production' !>b<! @endif -->c";
+    expected = "abc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should include if match (bangbang)');
+
+    input = "a<!-- @if NODE_ENV=='production' !>b<! @endif -->c";
+    expected = "ac";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}), expected, 'Should not include if not match (bangbang)');
+
     test.done();
   },
   'preprocess sequential @ifs': function(test) {
-    test.expect(2);
+    test.expect(3);
 
     var input,expected,settings;
 
@@ -258,6 +306,11 @@ exports['preprocess'] = {
             "d<!-- @if NODE_ENV=='production' !>e<!-- @endif -->f";
     expected = "abcdef";
     test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should process 2 sequential @ifs (bang)');
+
+    input = "a<!-- @if NODE_ENV=='production' !>b<! @endif -->c" +
+            "d<!-- @if NODE_ENV=='production' !>e<! @endif -->f";
+    expected = "abcdef";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should process 2 sequential @ifs (bangbang)');
 
     test.done();
   },
@@ -275,7 +328,7 @@ exports['preprocess'] = {
     test.done();
   },
   'force at least double equals': function(test) {
-    test.expect(2);
+    test.expect(3);
 
     var input,expected,settings;
 
@@ -287,10 +340,14 @@ exports['preprocess'] = {
     expected = "ac";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}), expected, 'Fail case, should not be included (bang)');
 
+    input = "a<!-- @if NODE_ENV='production' !>b<! @endif -->c";
+    expected = "ac";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}), expected, 'Fail case, should not be included (bangbang)');
+
     test.done();
   },
   'ifdef': function(test) {
-    test.expect(6);
+    test.expect(8);
 
     var input,expected,settings;
 
@@ -310,6 +367,14 @@ exports['preprocess'] = {
     expected = "abc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}), expected, 'Success case, should be included (bang)');
 
+    input = "a<!-- @ifdef NONEXISTANT !>b<! @endif -->c";
+    expected = "ac";
+    test.equal(pp.preprocess(input, { }), expected, 'Fail case, should not be included (bangbang)');
+
+    input = "a<!-- @ifdef NODE_ENV !>b<! @endif -->c";
+    expected = "abc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}), expected, 'Success case, should be included (bangbang)');
+
     input = "a/* @ifdef NONEXISTANT */b/* @endif */c";
     expected = "ac";
     test.equal(pp.preprocess(input, { },'js'), expected, 'Fail case, should not be included');
@@ -321,7 +386,7 @@ exports['preprocess'] = {
     test.done();
   },
   'ifndef': function(test) {
-    test.expect(6);
+    test.expect(8);
 
     var input,expected,settings;
 
@@ -340,6 +405,14 @@ exports['preprocess'] = {
     input = "a<!-- @ifndef NODE_ENV !>b<!-- @endif -->c";
     expected = "ac";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}), expected, 'Success case, should be included (bang)');
+
+    input = "a<!-- @ifndef NONEXISTANT !>b<! @endif -->c";
+    expected = "abc";
+    test.equal(pp.preprocess(input, { }), expected, 'Fail case, should not be included (bangbang)');
+
+    input = "a<!-- @ifndef NODE_ENV !>b<! @endif -->c";
+    expected = "ac";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}), expected, 'Success case, should be included (bangbang)');
 
     input = "a/* @ifndef NONEXISTANT */b/* @endif */c";
     expected = "abc";
