@@ -11,7 +11,7 @@ Preprocess HTML, JavaScript, and other files with directives based off custom or
   <!-- @if NODE_ENV='production' -->
   <script src="some/production/lib/like/analytics.js"></script>
   <!-- @endif -->
-  
+
 </head>
 <body>
   <!-- @ifdef DEBUG -->
@@ -23,10 +23,10 @@ Preprocess HTML, JavaScript, and other files with directives based off custom or
 </body>
 ```
 
-```js 
+```js
 var configValue = '/* @echo FOO */' || 'default value';
 
-// @ifdef DEBUG 
+// @ifdef DEBUG
 someDebuggingCall()
 // @endif
 
@@ -69,6 +69,9 @@ After build
    This will remove the enclosed block upon processing
  - `@echo VAR`
    This will include the environment variable VAR into your source
+ - `@exec FUNCTION([param1, param2...])`
+   This will execute the environment FUNCTION with is parameters and echo the result into your source. The parameter
+   could be a string or a reference to another environment variable.
 
 ### Extended html Syntax
 
@@ -88,6 +91,8 @@ environment configurations. You have access to simple tests of any variable with
     <script>
     var fingerprint = '<!-- @echo COMMIT_HASH -->' || 'DEFAULT';
     </script>
+
+    <script src="<!-- @exec static_path('another/production/javascript.js') -->"></script>
 </body>
 ```
 
@@ -101,6 +106,8 @@ With a `NODE_ENV` set to `production` and `0xDEADBEEF` in
     <script>
     var fingerprint = '0xDEADBEEF' || 'DEFAULT';
     </script>
+
+    <script src="http://cdn2.my.domain.com/another/javascript.js') -->"></script>
 </body>
 ```
 
@@ -114,6 +121,8 @@ the built file will be
     <script>
     var fingerprint = '' || 'DEFAULT';
     </script>
+
+    <script src="http://localhost/myapp/statics/another/javascript.js') -->"></script>
 </body>
 ```
 

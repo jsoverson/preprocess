@@ -23,6 +23,12 @@
 var pp = require('../lib/preprocess'),
     fs = require('fs');
 
+function hello() {
+  var names = Array.prototype.slice.call(arguments);;
+
+  return 'Hello '+ names.join() +'!';
+}
+
 exports['preprocess'] = {
   setUp: function(done) {
     // setup here
@@ -384,6 +390,30 @@ exports['preprocess'] = {
 
     test.done();
   },
+  'exec': function(test) {
+    test.expect(4);
+
+    var input,expected,settings;
+
+
+    input = "a<!-- @exec hello('Chuck Norris') -->c";
+    expected = "aHello Chuck Norris!c";
+    test.equal(pp.preprocess(input, {hello: hello}), expected, 'Should execute exec statement with one parameter');
+
+    input = "a<!-- @exec hello(\"Chuck Norris\", 'Gandhi') -->c";
+    expected = "aHello Chuck Norris,Gandhi!c";
+    test.equal(pp.preprocess(input, {hello: hello}), expected, 'Should execute exec statement with two parameters');
+
+    input = "a<!-- @exec hello(\"Chuck Norris\", buddy) -->c";
+    expected = "aHello Chuck Norris,Michael Jackson!c";
+    test.equal(pp.preprocess(input, {hello: hello, buddy: 'Michael Jackson'}), expected, 'Should execute exec statement with two parameters: one string and one variable');
+
+    input = "a<!-- @echo 'hello(\"Chuck Norris\")' -->c";
+    expected = "ahello(\"Chuck Norris\")c";
+    test.equal(pp.preprocess(input, {hello: hello}), expected, 'Should not execute exec statement (between quote)');
+
+    test.done();
+  },
   'default to env': function(test) {
     test.expect(1);
 
@@ -403,7 +433,7 @@ exports['preprocess'] = {
     var input,expected,settings;
 
     expected = "a0xDEADBEEFb";
-    pp.preprocessFile('test/fixtures/processFileTest.html', 'test/tmp/processFileTest.dest.html', { TEST : '0xDEADBEEF'}, function(){
+    pp.preprocessFile('test/fixtures/processFileTest.html', 'test/tmp/processFileTest.dest.html', { TEST : '0xDEADBEEF', hello: hello}, function(){
       test.equal(fs.readFileSync('test/tmp/processFileTest.dest.html').toString(), expected, 'Should process a file to disk');
 
       test.done();
