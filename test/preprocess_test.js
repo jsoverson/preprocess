@@ -155,7 +155,7 @@ exports['preprocess'] = {
     test.done();
   },
   'preprocess javascript': function(test) {
-    test.expect(5);
+    test.expect(7);
 
     // tests here
 
@@ -198,6 +198,11 @@ exports['preprocess'] = {
     input = "a/* @if NODE_ENV=='production' */b/* @endif */c";
     expected = "ac";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}, 'js'), expected, 'Should not include if not match');
+
+    input = "a" + /* @if NODE_ENV=='production' **"b" +/* @endif */  "c";
+    expected = "ac";
+    test.equal(input, expected, 'Should not include the commented section');
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}, 'js'), expected, 'Should not include b in dev env');
 
     test.done();
   },

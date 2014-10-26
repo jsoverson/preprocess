@@ -160,6 +160,23 @@ normalFunction();
 anotherFunction();
 ```
 
+Like HTML, you can have conditional blocks that are hidden by default by ending the directive with a `**` instead of `*/`
+
+```js
+angular.module('myModule', ['dep1'
+    , 'dep2'
+    /* @if NODE_ENV='production' **
+    , 'prod_dep'
+    /* @endif */
+    /* @exclude **
+    , 'debug_dep'
+    /* @endexclude */
+]);
+
+```
+
+Note: It doesn't work with simple style comments.
+
 CSS example
 
 ```css
