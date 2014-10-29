@@ -419,5 +419,29 @@ exports['preprocess'] = {
     var actual = fs.readFileSync('test/tmp/processFileSyncTest.dest.html').toString()
     test.equal(actual, expected, 'Should process a file to disk');
     test.done();
+  },
+  'multilevelContext': function(test) {
+    test.expect(3);
+
+    var input,expected,settings;
+    var context = {'FOO' :{'BAR':'test'}};
+
+    input = "// @echo FOO.BAR";
+    expected = "test";
+    test.equal(pp.preprocess(input, context, 'js'), expected, 'Should echo multi-level context');
+
+    input = "// @echo FOO";
+    expected = "[object Object]";
+    test.equal(pp.preprocess(input, context, 'js'), expected, 'Should maintain backwards compatibility');
+
+    input = "a\n" +
+      "// @if FOO.BAR=='test' \n" +
+      "b\n" +
+      "// @endif \n" +
+      "c";
+    expected = "a\nb\nc";
+    test.equal(pp.preprocess(input, context, 'js'), expected, 'Should compare multi-level context');
+
+    test.done();
   }
 };
