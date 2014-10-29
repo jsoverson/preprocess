@@ -34,7 +34,7 @@ someDebuggingCall()
 
 ## Directive syntax
 
-### Simple syntax
+### Basic syntax
 
 The most basic usage is for files that only have two states, non-processed and processed.
 In this case, your `@exclude` directives are removed after preprocessing
@@ -208,6 +208,10 @@ pp.preprocess(text);
 pp.preprocess(text, {USERNAME : "Bob"});
 // -> Hi, I am Bob
 
+// specify the format to use for the directives as the third parameter
+pp.preprocess(text, {USERNAME : "Bob"}, 'html');
+// -> Hi, I am Bob
+
 // Simple wrapper around fs.readFile and fs.writeFile
 pp.preprocessFile(src, dest, context, callback);
 
@@ -220,6 +224,7 @@ pp.preprocessFileSync(src, dest, context);
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using jshint
 
 ## Release History
+ - 2.1.0 Added automatic support for numerous formats, merged @exec, hidden by default html tags, added simple directives
  - 2.0.0 Added ability to echo strings, added conditional comments, removed lodash, merged 17, 13, 15, 16
  - 1.2.0 Added processing for hash-style comments (via @marsch). Added more file aliases.
  - 1.1.0 Added deep inclusion, fixed sequential ifs
@@ -228,7 +233,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## License
 
-Copyright OneHealth Solutions, Inc
+Copyright Jarrod Overson
 
 Written by Jarrod Overson
 
