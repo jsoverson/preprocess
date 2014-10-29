@@ -431,7 +431,7 @@ exports['preprocess'] = {
     test.done();
   },
   'include files': function(test) {
-    test.expect(3);
+    test.expect(4);
 
     var input,expected,settings;
     input = "a<!-- @include include.txt -->c";
@@ -446,10 +446,14 @@ exports['preprocess'] = {
     expected = "a!bazqux!c";
     test.equal(pp.preprocess(input, { srcDir : 'test'},'js'), expected, 'Should include files (js)');
 
+    input = "a\n@include static.txt\nc";
+    expected = "a\n!bazqux!\nc";
+    test.equal(pp.preprocess(input, { srcDir : 'test'},'simple'), expected, 'Should include files (simple)');
+
     test.done();
   },
   'echo': function(test) {
-    test.expect(2);
+    test.expect(3);
 
     var input,expected,settings;
 
@@ -461,10 +465,14 @@ exports['preprocess'] = {
     expected = "aFOOc";
     test.equal(pp.preprocess(input), expected, 'Should echo strings');
 
+    input = "a\n@echo 'FOO'\nc";
+    expected = "a\nFOO\nc";
+    test.equal(pp.preprocess(input,{},'simple'), expected, 'Should echo strings');
+
     test.done();
   },
   'exec': function(test) {
-    test.expect(4);
+    test.expect(5);
 
     var input,expected,settings;
 
@@ -484,6 +492,10 @@ exports['preprocess'] = {
     input = "a<!-- @echo 'hello(\"Chuck Norris\")' -->c";
     expected = "ahello(\"Chuck Norris\")c";
     test.equal(pp.preprocess(input, {hello: hello}), expected, 'Should not execute exec statement (between quote)');
+
+    input = "a\n@exec hello('Chuck Norris')\nc";
+    expected = "a\nHello Chuck Norris!\nc";
+    test.equal(pp.preprocess(input, {hello: hello}, 'simple'), expected, 'Should execute exec statement with one parameter');
 
     test.done();
   },
