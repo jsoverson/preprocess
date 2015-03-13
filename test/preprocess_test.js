@@ -462,7 +462,7 @@ exports['preprocess'] = {
 
     input = "a<!-- @static-include includenewline.txt -->c";
     expected = "a!foobar!\n c";
-    test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should static-include files and indent if ending with a newline');
+    test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should static-include files and indent if ending with a newline, just like include');
 
     input = "a/* @static-include include.txt */c";
     expected = "a!foobar!<!-- @include static.txt -->c";
