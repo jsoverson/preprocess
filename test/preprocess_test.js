@@ -24,7 +24,7 @@ var pp = require('../lib/preprocess'),
     fs = require('fs');
 
 function hello() {
-  var names = Array.prototype.slice.call(arguments);;
+  var names = Array.prototype.slice.call(arguments);
 
   return 'Hello '+ names.join() +'!';
 }
@@ -449,6 +449,28 @@ exports['preprocess'] = {
     input = "a\n@include static.txt\nc";
     expected = "a\n!bazqux!\nc";
     test.equal(pp.preprocess(input, { srcDir : 'test'},'simple'), expected, 'Should include files (simple)');
+
+    test.done();
+  },
+  'static include files': function(test) {
+    test.expect(4);
+
+    var input,expected;
+    input = "a<!-- @static-include include.txt -->c";
+    expected = "a!foobar!<!-- @include static.txt -->c";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should include files, but not recursively');
+
+    input = "a<!-- @static-include includenewline.txt -->c";
+    expected = "a!foobar!\n c";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should static-include files and indent if ending with a newline');
+
+    input = "a/* @static-include include.txt */c";
+    expected = "a!foobar!<!-- @include static.txt -->c";
+    test.equal(pp.preprocess(input, { srcDir : 'test'},'js'), expected, 'Should include files (js), but not recursively');
+
+    input = "a\n@static-include include.txt\nc";
+    expected = "a\n!foobar!<!-- @include static.txt -->\nc";
+    test.equal(pp.preprocess(input, { srcDir : 'test'},'simple'), expected, 'Should include files (simple), but not recursively');
 
     test.done();
   },
