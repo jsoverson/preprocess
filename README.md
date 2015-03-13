@@ -65,6 +65,9 @@ After build
  - `@include`
    This will include the source from an external file. If the included source ends with a newline then the
    following line will be space indented to the level the @include was found.
+ - `@static-include`
+   Works the same way as `@include` but doesn't process the included file recursively. Is useful if a large
+   file has to be included and the recursive processing is not necessary or would otherwise take too long.
  - `@exclude` / `@endexclude`
    This will remove the enclosed block upon processing
  - `@echo VAR`
@@ -107,7 +110,7 @@ With a `NODE_ENV` set to `production` and `0xDEADBEEF` in
     var fingerprint = '0xDEADBEEF' || 'DEFAULT';
     </script>
 
-    <script src="http://cdn2.my.domain.com/another/javascript.js') -->"></script>
+    <script src="http://cdn2.my.domain.com/another/javascript.js"></script>
 </body>
 ```
 
@@ -122,7 +125,7 @@ the built file will be
     var fingerprint = '' || 'DEFAULT';
     </script>
 
-    <script src="http://localhost/myapp/statics/another/javascript.js') -->"></script>
+    <script src="http://localhost/myapp/statics/another/javascript.js"></script>
 </body>
 ```
 
