@@ -69,6 +69,9 @@ After build
    This will remove the enclosed block upon processing
  - `@echo VAR`
    This will include the environment variable VAR into your source
+ - `@foreach $VAR in ARR` / `@endfor`
+   This will repeat the enclosed block for each value in the Array or Object in ARR. Each value in ARR can be interpolated into the resulting content with $VAR.
+   This will include the enclosed block if VAR is not defined (typeof === 'undefined')
  - `@exec FUNCTION([param1, param2...])`
    This will execute the environment FUNCTION with is parameters and echo the result into your source. The parameter
    could be a string or a reference to another environment variable.
