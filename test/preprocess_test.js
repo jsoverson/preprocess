@@ -24,7 +24,7 @@ var pp = require('../lib/preprocess'),
     fs = require('fs');
 
 function hello() {
-  var names = Array.prototype.slice.call(arguments);;
+  var names = Array.prototype.slice.call(arguments);
 
   return 'Hello '+ names.join() +'!';
 }
@@ -449,6 +449,20 @@ exports['preprocess'] = {
     input = "a\n@include static.txt\nc";
     expected = "a\n!bazqux!\nc";
     test.equal(pp.preprocess(input, { srcDir : 'test'},'simple'), expected, 'Should include files (simple)');
+
+    test.done();
+  },
+  'extend files': function(test) {
+    test.expect(3);
+
+    var input,expected,settings;
+    input = "<!-- @extend extend.html -->qr<!-- @endextend -->";
+    expected = "aqrb";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should extend files');
+
+    input = "<!-- @extend extend.html -->\nqa\n<!-- @endextend -->";
+    expected = "a\nqa\nb";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should extend files');
 
     test.done();
   },
