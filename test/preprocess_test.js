@@ -453,7 +453,7 @@ exports['preprocess'] = {
     test.done();
   },
   'extend files': function(test) {
-    test.expect(3);
+    test.expect(2);
 
     var input,expected,settings;
     input = "<!-- @extend extend.html -->qr<!-- @endextend -->";
