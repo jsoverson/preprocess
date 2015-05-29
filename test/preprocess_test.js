@@ -24,7 +24,7 @@ var pp = require('../lib/preprocess'),
     fs = require('fs');
 
 function hello() {
-  var names = Array.prototype.slice.call(arguments);;
+  var names = Array.prototype.slice.call(arguments);
 
   return 'Hello '+ names.join() +'!';
 }
@@ -452,6 +452,20 @@ exports['preprocess'] = {
 
     test.done();
   },
+  'extend files': function(test) {
+    test.expect(2);
+
+    var input,expected,settings;
+    input = "<!-- @extend extend.html -->qr<!-- @endextend -->";
+    expected = "aqrb";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should extend files');
+
+    input = "<!-- @extend extend.html -->\nqa\n<!-- @endextend -->";
+    expected = "a\nqa\nb";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should extend files');
+
+    test.done();
+  },
   'echo': function(test) {
     test.expect(3);
 
@@ -468,6 +482,67 @@ exports['preprocess'] = {
     input = "a\n@echo 'FOO'\nc";
     expected = "a\nFOO\nc";
     test.equal(pp.preprocess(input,{},'simple'), expected, 'Should echo strings');
+
+    test.done();
+  },
+  'foreach_array': function(test) {
+    test.expect(4);
+
+    var input,expected,settings;
+
+    input = "<!-- @foreach $ITEM in LIST -->$ITEM<!-- @endfor -->";
+    expected = "a";
+    test.equal(pp.preprocess(input, { LIST: ['a'].toString()}), expected, 'Should run basic loop from Array with one item');
+	
+    input = "<!-- @foreach $ITEM in LIST -->$ITEM<!-- @endfor -->";
+    expected = "ab";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString()}), expected, 'Should run basic loop from Array with two items');
+
+    input = "<!-- @foreach $ITEM in LIST -->$ITEM<!-- @endfor -->";
+    expected = "ab";
+    test.equal(pp.preprocess(input, { LIST: "a,b"}), expected, 'Should run basic loop from Stringified list');
+
+    input = "<!-- @foreach $ITEM in LIST -->$ITEM<!-- @endfor -->";
+    expected = "ab";
+    test.equal(pp.preprocess(input, { LIST: "['a','b']"}), expected, 'Should run basic loop String Presented Formatted Array');
+
+    test.done();
+  },
+  'foreach_object': function(test) {
+    test.expect(2);
+
+    var input,expected,settings;
+
+    input = "<!-- @foreach $ITEM in LIST -->$ITEM<!-- @endfor -->";
+    expected = "ab";
+    test.equal(pp.preprocess(input, { LIST: '{"itemOne": "a", "itemTwo": "b"}'}), expected, 'Should run basic loop from Object with two items');
+	
+    input = "<!-- @foreach $ITEM in LIST -->$ITEM<!-- @endfor -->";
+    expected = "ab";
+    test.equal(pp.preprocess(input, { LIST: JSON.stringify({'itemOne': 'a', 'itemTwo': 'b'})}), expected, 'Should run basic loop from Object with two items');
+
+    test.done();
+  },
+  'foreach_mixing': function(test) {
+    test.expect(4);
+
+    var input,expected,settings;
+	
+    input = "<!-- @foreach $ITEM in LIST -->ab<!-- @endfor -->";
+    expected = "abab";
+    test.equal(pp.preprocess(input, { LIST: JSON.stringify({'itemOne': 'a', 'itemTwo': 'b'})}), expected, 'Should run basic loop just repeating content');
+	
+    input = "<!-- @foreach $ITEM in LIST --><div class='<!-- @echo LIST_CLASS -->'>$ITEM</div><!-- @endfor -->";
+    expected = "<div class='list'>a</div><div class='list'>b</div>";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString(), LIST_CLASS: 'list' }), expected, 'Duplicate loop with echo variable included in each');
+
+    input = "<!-- @foreach $ITEM in LIST -->a<!-- @ifdef NOVAR -->$ITEM<!-- @endif --><!-- @endfor -->";
+    expected = "aa";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString(), LIST_CLASS: 'list' }), expected, 'Loop with ifdef');
+
+    input = "<!-- @foreach $ITEM in LIST -->a<!-- @ifndef NOVAR -->$ITEM<!-- @endif --><!-- @endfor -->";
+    expected = "aaab";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString(), LIST_CLASS: 'list' }), expected, 'Loop with ifndef');
 
     test.done();
   },
