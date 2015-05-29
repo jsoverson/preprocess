@@ -65,6 +65,10 @@ After build
  - `@include`
    This will include the source from an external file. If the included source ends with a newline then the
    following line will be space indented to the level the @include was found.
+ - `@extend file.html` / `@endextend`
+   This will use the source from the external file indicated with the `@extend` tag to wrap the enclosed block.
+ - `@extendable`
+   This tag is used to indicate the location in a file referenced using `@extend` where the block enclosed by `@extend` will be populated.
  - `@exclude` / `@endexclude`
    This will remove the enclosed block upon processing
  - `@echo VAR`
@@ -226,6 +230,7 @@ pp.preprocessFileSync(src, dest, context);
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using jshint
 
 ## Release History
+ - 2.2.0 Added support for @foreach and @extend
  - 2.1.0 Added automatic support for numerous formats, merged @exec, hidden by default html tags, added simple directives
  - 2.0.0 Added ability to echo strings, added conditional comments, removed lodash, merged 17, 13, 15, 16
  - 1.2.0 Added processing for hash-style comments (via @marsch). Added more file aliases.
