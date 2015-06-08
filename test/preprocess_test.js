@@ -456,19 +456,19 @@ exports['preprocess'] = {
     test.expect(4);
 
     var input,expected;
-    input = "a<!-- @static-include include.txt -->c";
+    input = "a<!-- @include-static include.txt -->c";
     expected = "a!foobar!<!-- @include static.txt -->c";
     test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should include files, but not recursively');
 
-    input = "a<!-- @static-include includenewline.txt -->c";
+    input = "a<!-- @include-static includenewline.txt -->c";
     expected = "a!foobar!\n c";
-    test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should static-include files and indent if ending with a newline, just like include');
+    test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should include-static files and indent if ending with a newline, just like include');
 
-    input = "a/* @static-include include.txt */c";
+    input = "a/* @include-static include.txt */c";
     expected = "a!foobar!<!-- @include static.txt -->c";
     test.equal(pp.preprocess(input, { srcDir : 'test'},'js'), expected, 'Should include files (js), but not recursively');
 
-    input = "a\n@static-include include.txt\nc";
+    input = "a\n@include-static include.txt\nc";
     expected = "a\n!foobar!<!-- @include static.txt -->\nc";
     test.equal(pp.preprocess(input, { srcDir : 'test'},'simple'), expected, 'Should include files (simple), but not recursively');
 

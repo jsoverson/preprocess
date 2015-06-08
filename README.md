@@ -65,7 +65,7 @@ After build
  - `@include`
    This will include the source from an external file. If the included source ends with a newline then the
    following line will be space indented to the level the @include was found.
- - `@static-include`
+ - `@include-static`
    Works the same way as `@include` but doesn't process the included file recursively. Is useful if a large
    file has to be included and the recursive processing is not necessary or would otherwise take too long.
  - `@exclude` / `@endexclude`
