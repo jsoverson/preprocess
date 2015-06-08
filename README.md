@@ -233,6 +233,7 @@ pp.preprocessFileSync(src, dest, context);
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using jshint
 
 ## Release History
+ - 2.3.0 Added support for @include-static
  - 2.2.0 Added support for @foreach and @extend
  - 2.1.0 Added automatic support for numerous formats, merged @exec, hidden by default html tags, added simple directives
  - 2.0.0 Added ability to echo strings, added conditional comments, removed lodash, merged 17, 13, 15, 16
