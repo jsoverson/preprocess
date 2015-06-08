@@ -452,6 +452,28 @@ exports['preprocess'] = {
 
     test.done();
   },
+  'static include files': function(test) {
+    test.expect(4);
+
+    var input,expected;
+    input = "a<!-- @include-static include.txt -->c";
+    expected = "a!foobar!<!-- @include static.txt -->c";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should include files, but not recursively');
+
+    input = "a<!-- @include-static includenewline.txt -->c";
+    expected = "a!foobar!\n c";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should include-static files and indent if ending with a newline, just like include');
+
+    input = "a/* @include-static include.txt */c";
+    expected = "a!foobar!<!-- @include static.txt -->c";
+    test.equal(pp.preprocess(input, { srcDir : 'test'},'js'), expected, 'Should include files (js), but not recursively');
+
+    input = "a\n@include-static include.txt\nc";
+    expected = "a\n!foobar!<!-- @include static.txt -->\nc";
+    test.equal(pp.preprocess(input, { srcDir : 'test'},'simple'), expected, 'Should include files (simple), but not recursively');
+
+    test.done();
+  },
   'extend files': function(test) {
     test.expect(2);
 
@@ -493,7 +515,7 @@ exports['preprocess'] = {
     input = "<!-- @foreach $ITEM in LIST -->$ITEM<!-- @endfor -->";
     expected = "a";
     test.equal(pp.preprocess(input, { LIST: ['a'].toString()}), expected, 'Should run basic loop from Array with one item');
-	
+
     input = "<!-- @foreach $ITEM in LIST -->$ITEM<!-- @endfor -->";
     expected = "ab";
     test.equal(pp.preprocess(input, { LIST: ['a','b'].toString()}), expected, 'Should run basic loop from Array with two items');
@@ -516,7 +538,7 @@ exports['preprocess'] = {
     input = "<!-- @foreach $ITEM in LIST -->$ITEM<!-- @endfor -->";
     expected = "ab";
     test.equal(pp.preprocess(input, { LIST: '{"itemOne": "a", "itemTwo": "b"}'}), expected, 'Should run basic loop from Object with two items');
-	
+
     input = "<!-- @foreach $ITEM in LIST -->$ITEM<!-- @endfor -->";
     expected = "ab";
     test.equal(pp.preprocess(input, { LIST: JSON.stringify({'itemOne': 'a', 'itemTwo': 'b'})}), expected, 'Should run basic loop from Object with two items');
@@ -527,11 +549,11 @@ exports['preprocess'] = {
     test.expect(4);
 
     var input,expected,settings;
-	
+
     input = "<!-- @foreach $ITEM in LIST -->ab<!-- @endfor -->";
     expected = "abab";
     test.equal(pp.preprocess(input, { LIST: JSON.stringify({'itemOne': 'a', 'itemTwo': 'b'})}), expected, 'Should run basic loop just repeating content');
-	
+
     input = "<!-- @foreach $ITEM in LIST --><div class='<!-- @echo LIST_CLASS -->'>$ITEM</div><!-- @endfor -->";
     expected = "<div class='list'>a</div><div class='list'>b</div>";
     test.equal(pp.preprocess(input, { LIST: ['a','b'].toString(), LIST_CLASS: 'list' }), expected, 'Duplicate loop with echo variable included in each');
