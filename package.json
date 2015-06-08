@@ -1,7 +1,7 @@
 {
   "name": "preprocess",
   "description": "Preprocess directives in HTML, JavaScript, etc directives based off variable context",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "homepage": "https://github.com/jsoverson/preprocess",
   "author": {
     "name": "Jarrod Overson",
@@ -29,9 +29,9 @@
     "test": "grunt test"
   },
   "devDependencies": {
-    "grunt-contrib-jshint": "~0.6.3",
+    "grunt-contrib-jshint": "~0.11.0",
     "grunt": "~0.4.1",
-    "grunt-contrib-nodeunit": "~0.2.0"
+    "grunt-contrib-nodeunit": "~0.4.0"
   },
   "keywords": [
     "directive",
