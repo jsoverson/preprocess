@@ -68,10 +68,16 @@ After build
  - `@include-static`
    Works the same way as `@include` but doesn't process the included file recursively. Is useful if a large
    file has to be included and the recursive processing is not necessary or would otherwise take too long.
+ - `@extend file.html` / `@endextend`
+   This will use the source from the external file indicated with the `@extend` tag to wrap the enclosed block.
+ - `@extendable`
+   This tag is used to indicate the location in a file referenced using `@extend` where the block enclosed by `@extend` will be populated.
  - `@exclude` / `@endexclude`
    This will remove the enclosed block upon processing
  - `@echo VAR`
    This will include the environment variable VAR into your source
+ - `@foreach $VAR in ARR` / `@endfor`
+   This will repeat the enclosed block for each value in the Array or Object in ARR. Each value in ARR can be interpolated into the resulting content with $VAR.
  - `@exec FUNCTION([param1, param2...])`
    This will execute the environment FUNCTION with is parameters and echo the result into your source. The parameter
    could be a string or a reference to another environment variable.
@@ -227,6 +233,7 @@ pp.preprocessFileSync(src, dest, context);
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using jshint
 
 ## Release History
+ - 2.2.0 Added support for @foreach and @extend
  - 2.1.0 Added automatic support for numerous formats, merged @exec, hidden by default html tags, added simple directives
  - 2.0.0 Added ability to echo strings, added conditional comments, removed lodash, merged 17, 13, 15, 16
  - 1.2.0 Added processing for hash-style comments (via @marsch). Added more file aliases.
