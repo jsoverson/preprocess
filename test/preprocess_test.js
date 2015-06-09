@@ -139,7 +139,7 @@ exports['preprocess'] = {
 
     test.done();
   },
-  'preprocess multiple html directives inline': function(test) {
+  'preprocess multiple html/js directives inline': function(test) {
     test.expect(2);
 
     var input,expected,settings;
@@ -475,7 +475,7 @@ exports['preprocess'] = {
     test.done();
   },
   'extend files': function(test) {
-    test.expect(2);
+    test.expect(3);
 
     var input,expected,settings;
     input = "<!-- @extend extend.html -->qr<!-- @endextend -->";
@@ -483,8 +483,13 @@ exports['preprocess'] = {
     test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should extend files');
 
     input = "<!-- @extend extend.html -->\nqa\n<!-- @endextend -->";
-    expected = "a\nqa\nb";
-    test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should extend files');
+    expected = "aqab";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should extend files while stripping newlines from inserted content');
+
+    input = "<!-- @extend extendadv.html -->\nqa\n<!-- @endextend -->";
+    expected = "a\r  b\r  red\r  qa\rc";
+    test.equal(pp.preprocess(input, { srcDir : 'test', BLUE: "red"}), expected,
+      'Should extend files while preserving newlines in target file');
 
     test.done();
   },
