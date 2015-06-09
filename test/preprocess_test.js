@@ -320,16 +320,22 @@ exports['preprocess'] = {
 
     test.done();
   },
-  'simple preprocess same line': function(test) {
-    test.expect(1);
-
-    // tests here
+  'preprocess @exclude': function(test) {
+    test.expect(3);
 
     var input,expected,settings;
 
     input = "a<!-- @exclude -->b<!-- @endexclude -->c";
     expected = "ac";
-    test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should exclude generic');
+    test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should exclude');
+
+    input = "a\n<!-- @exclude -->\nb\n<!-- @endexclude -->\nc";
+    expected = "a\nc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should exclude with newlines');
+
+    input = "var test = 1;\n// @exclude\nvar test = 4;\n// @endexclude\nvar test2 = 5;";
+    expected = "var test = 1;\nvar test2 = 5;";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'production'}, 'js'), expected, 'Should exclude js');
 
     test.done();
   },
