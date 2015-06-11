@@ -65,11 +65,14 @@ After build
  - `@include`
    This will include the source from an external file. If the included source ends with a newline then the
    following line will be space indented to the level the @include was found.
+   *Requires the `srcDir` context attribute to point to the source dir of the files to be included, i.e. `{srcDir: '.'}`.*
  - `@include-static`
    Works the same way as `@include` but doesn't process the included file recursively. Is useful if a large
    file has to be included and the recursive processing is not necessary or would otherwise take too long.
+   *Requires the `srcDir` context attribute to point to the source dir of the files to be included, i.e. `{srcDir: '.'}`.*
  - `@extend file.html` / `@endextend`
    This will use the source from the external file indicated with the `@extend` tag to wrap the enclosed block.
+   *Requires the `srcDir` context attribute to point to the source dir of the file to be extended, i.e. `{srcDir: '.'}`.*
  - `@extendable`
    This tag is used to indicate the location in a file referenced using `@extend` where the block enclosed by `@extend` will be populated.
  - `@exclude` / `@endexclude`
@@ -79,7 +82,7 @@ After build
  - `@foreach $VAR in ARR` / `@endfor`
    This will repeat the enclosed block for each value in the Array or Object in ARR. Each value in ARR can be interpolated into the resulting content with $VAR.
  - `@exec FUNCTION([param1, param2...])`
-   This will execute the environment FUNCTION with is parameters and echo the result into your source. The parameter
+   This will execute the environment FUNCTION with its parameters and echo the result into your source. The parameter
    could be a string or a reference to another environment variable.
 
 ### Extended html Syntax
