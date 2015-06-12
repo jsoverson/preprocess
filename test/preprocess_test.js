@@ -23,8 +23,10 @@
 var pp = require('../lib/preprocess'),
     fs = require('fs');
 
-function hello() {
-  var names = Array.prototype.slice.call(arguments);
+function hello(test, expectedParamNumber) {
+  test.equal(arguments.length - 2, expectedParamNumber, "Correct number of params have to be passed to function.");
+
+  var names = Array.prototype.slice.call(arguments, 2);
 
   return 'Hello '+ names.join() +'!';
 }
@@ -580,30 +582,69 @@ exports['preprocess'] = {
     test.done();
   },
   'exec': function(test) {
-    test.expect(5);
+    test.expect(30);
 
-    var input,expected,settings;
-
+    var input,expected;
 
     input = "a<!-- @exec hello('Chuck Norris') -->c";
     expected = "aHello Chuck Norris!c";
-    test.equal(pp.preprocess(input, {hello: hello}), expected, 'Should execute exec statement with one parameter');
+    test.equal(pp.preprocess(input, {hello: hello.bind(null, test, 1)}), expected, 'Should execute exec statement with one parameter');
 
     input = "a<!-- @exec hello(\"Chuck Norris\", 'Gandhi') -->c";
     expected = "aHello Chuck Norris,Gandhi!c";
-    test.equal(pp.preprocess(input, {hello: hello}), expected, 'Should execute exec statement with two parameters');
+    test.equal(pp.preprocess(input, {hello: hello.bind(null, test, 2)}), expected, 'Should execute exec statement with two parameters');
 
     input = "a<!-- @exec hello(\"Chuck Norris\", buddy) -->c";
     expected = "aHello Chuck Norris,Michael Jackson!c";
-    test.equal(pp.preprocess(input, {hello: hello, buddy: 'Michael Jackson'}), expected, 'Should execute exec statement with two parameters: one string and one variable');
+    test.equal(pp.preprocess(input, {hello: hello.bind(null, test, 2), buddy: 'Michael Jackson'}), expected, 'Should execute exec statement with two parameters: one string and one variable');
 
-    input = "a<!-- @echo 'hello(\"Chuck Norris\")' -->c";
-    expected = "ahello(\"Chuck Norris\")c";
-    test.equal(pp.preprocess(input, {hello: hello}), expected, 'Should not execute exec statement (between quote)');
+    input = "a/* @exec hello('Chuck Norris') */c";
+    expected = "aHello Chuck Norris!c";
+    test.equal(pp.preprocess(input, {hello: hello.bind(null, test, 1)}, 'js'), expected, 'Should execute exec statement with one parameter (js, block comment)');
+
+    input = "a/* @exec hello(\"Chuck Norris\", 'Gandhi') */c";
+    expected = "aHello Chuck Norris,Gandhi!c";
+    test.equal(pp.preprocess(input, {hello: hello.bind(null, test, 2)}, 'js'), expected, 'Should execute exec statement with two parameters (js, block comment)');
+
+    input = "a/* @exec hello(\"Chuck Norris\", buddy) */c";
+    expected = "aHello Chuck Norris,Michael Jackson!c";
+    test.equal(pp.preprocess(input, {hello: hello.bind(null, test, 2), buddy: 'Michael Jackson'}, 'js'), expected, 'Should execute exec statement with two parameters: one string and one variable (js, block comment)');
+
+    input = "a\n// @exec hello('Chuck Norris')\nc";
+    expected = "a\nHello Chuck Norris!\nc";
+    test.equal(pp.preprocess(input, {hello: hello.bind(null, test, 1)}, 'js'), expected, 'Should execute exec statement with one parameter (js, line comment)');
+
+    input = "a\n// @exec hello(\"Chuck Norris\", 'Gandhi')\nc";
+    expected = "a\nHello Chuck Norris,Gandhi!\nc";
+    test.equal(pp.preprocess(input, {hello: hello.bind(null, test, 2)}, 'js'), expected, 'Should execute exec statement with two parameters (js, line comment)');
+
+    input = "a\n// @exec hello(\"Chuck Norris\", buddy)\nc";
+    expected = "a\nHello Chuck Norris,Michael Jackson!\nc";
+    test.equal(pp.preprocess(input, {hello: hello.bind(null, test, 2), buddy: 'Michael Jackson'}, 'js'), expected, 'Should execute exec statement with two parameters: one string and one variable (js, line comment)');
 
     input = "a\n@exec hello('Chuck Norris')\nc";
     expected = "a\nHello Chuck Norris!\nc";
-    test.equal(pp.preprocess(input, {hello: hello}, 'simple'), expected, 'Should execute exec statement with one parameter');
+    test.equal(pp.preprocess(input, {hello: hello.bind(null, test, 1)}, 'simple'), expected, 'Should execute exec statement with one parameter (simple)');
+
+    input = "a\n@exec hello(\"Chuck Norris\", 'Gandhi')\nc";
+    expected = "a\nHello Chuck Norris,Gandhi!\nc";
+    test.equal(pp.preprocess(input, {hello: hello.bind(null, test, 2)}, 'simple'), expected, 'Should execute exec statement with two parameters (simple)');
+
+    input = "a\n@exec hello(\"Chuck Norris\", buddy)\nc";
+    expected = "a\nHello Chuck Norris,Michael Jackson!\nc";
+    test.equal(pp.preprocess(input, {hello: hello.bind(null, test, 2), buddy: 'Michael Jackson'}, 'simple'), expected, 'Should execute exec statement with two parameters: one string and one variable (simple)');
+
+    input = "a\n# @exec hello('Chuck Norris')\nc";
+    expected = "a\nHello Chuck Norris!\nc";
+    test.equal(pp.preprocess(input, {hello: hello.bind(null, test, 1)}, 'coffee'), expected, 'Should execute exec statement with one parameter (coffee)');
+
+    input = "a\n# @exec hello(\"Chuck Norris\", 'Gandhi')\nc";
+    expected = "a\nHello Chuck Norris,Gandhi!\nc";
+    test.equal(pp.preprocess(input, {hello: hello.bind(null, test, 2)}, 'coffee'), expected, 'Should execute exec statement with two parameters (coffee)');
+
+    input = "a\n# @exec hello(\"Chuck Norris\", buddy)\nc";
+    expected = "a\nHello Chuck Norris,Michael Jackson!\nc";
+    test.equal(pp.preprocess(input, {hello: hello.bind(null, test, 2), buddy: 'Michael Jackson'}, 'coffee'), expected, 'Should execute exec statement with two parameters: one string and one variable (coffee)');
 
     test.done();
   },
@@ -626,7 +667,7 @@ exports['preprocess'] = {
     var input,expected,settings;
 
     expected = "a0xDEADBEEFb";
-    pp.preprocessFile('test/fixtures/processFileTest.html', 'test/tmp/processFileTest.dest.html', { TEST : '0xDEADBEEF', hello: hello}, function(){
+    pp.preprocessFile('test/fixtures/processFileTest.html', 'test/tmp/processFileTest.dest.html', { TEST : '0xDEADBEEF'}, function(){
       test.equal(fs.readFileSync('test/tmp/processFileTest.dest.html').toString(), expected, 'Should process a file to disk');
 
       test.done();
