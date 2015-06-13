@@ -167,9 +167,7 @@ exports['preprocess'] = {
   'preprocess @if in javascript': function(test) {
     test.expect(7);
 
-    // tests here
-
-    var input,expected,settings;
+    var input,expected;
 
     input = "a\n" +
       "// @if NODE_ENV!='production'\n" +
@@ -209,10 +207,13 @@ exports['preprocess'] = {
     expected = "ac";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}, 'js'), expected, 'Should not include if not match');
 
-    input = "a" + /* @if NODE_ENV=='production' **"b" +/* @endif */  "c";
+    input = "a/* @if NODE_ENV=='production' **b/* @endif */c";
+    expected = "abc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'production'}, 'js'), expected, 'Should include if match (hidden by default syntax)');
+
+    input = "a/* @if NODE_ENV=='production' **b/* @endif */c";
     expected = "ac";
-    test.equal(input, expected, 'Should not include the commented section');
-    test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}, 'js'), expected, 'Should not include b in dev env');
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}, 'js'), expected, 'Should not include if not match (hidden by default syntax)');
 
     test.done();
   },

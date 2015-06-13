@@ -187,7 +187,7 @@ angular.module('myModule', ['dep1'
 
 ```
 
-Note: It doesn't work with simple style comments.
+*Note: Hidden by default blocks only work with block comments (`/* */`) but not with line comments (`//`).*
 
 CSS example
 
