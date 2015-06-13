@@ -1,0 +1,2 @@
+!foobar!
+# @include static.txt

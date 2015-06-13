@@ -1,1 +1,2 @@
-!foobar!<!-- @include static.txt -->
+!foobar!
+@include static.txt

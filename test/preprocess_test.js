@@ -36,7 +36,7 @@ exports['preprocess'] = {
     // setup here
     done();
   },
-  'preprocess html': function(test) {
+  'preprocess @if in html': function(test) {
     test.expect(12);
 
     // tests here
@@ -141,8 +141,8 @@ exports['preprocess'] = {
 
     test.done();
   },
-  'preprocess multiple html/js directives inline': function(test) {
-    test.expect(2);
+  'preprocess multiple @echo directives inline in html/js': function(test) {
+    test.expect(4);
 
     var input,expected,settings;
 
@@ -154,9 +154,17 @@ exports['preprocess'] = {
     expected = "a1b2c";
     test.equal(pp.preprocess(input, { FOO: 1, BAR : 2}, 'js'), expected, 'Should process without overreaching (js)');
 
+    input = "a<!-- @echo '-*' -->b<!-- @echo '*-' -->c";
+    expected = "a-*b*-c";
+    test.equal(pp.preprocess(input), expected, 'Should process without overreaching when param contains - and * chars');
+
+    input = "a/* @echo '-*' */b/* @echo '*-' */c";
+    expected = "a-*b*-c";
+    test.equal(pp.preprocess(input, {}, 'js'), expected, 'Should process without overreaching when param contains - and * chars (js)');
+
     test.done();
   },
-  'preprocess javascript': function(test) {
+  'preprocess @if in javascript': function(test) {
     test.expect(5);
 
     // tests here
@@ -203,7 +211,7 @@ exports['preprocess'] = {
 
     test.done();
   },
-  'preprocess coffeescript': function(test) {
+  'preprocess @if in coffeescript': function(test) {
     test.expect(4);
 
     var input, expected, settings;
@@ -243,7 +251,7 @@ exports['preprocess'] = {
 
     test.done();
   },
-  'preprocess html same line': function(test) {
+  'preprocess @if in same line in html': function(test) {
     test.expect(12);
 
     // tests here
@@ -300,7 +308,7 @@ exports['preprocess'] = {
 
     test.done();
   },
-  'preprocess sequential @ifs': function(test) {
+  'preprocess sequential @ifs in html': function(test) {
     test.expect(3);
 
     var input,expected,settings;
@@ -341,7 +349,7 @@ exports['preprocess'] = {
 
     test.done();
   },
-  'force at least double equals': function(test) {
+  'force at least double equals for @if conditions': function(test) {
     test.expect(3);
 
     var input,expected,settings;
@@ -360,7 +368,7 @@ exports['preprocess'] = {
 
     test.done();
   },
-  'ifdef': function(test) {
+  '@ifdef': function(test) {
     test.expect(8);
 
     var input,expected,settings;
@@ -399,7 +407,7 @@ exports['preprocess'] = {
 
     test.done();
   },
-  'ifndef': function(test) {
+  '@ifndef': function(test) {
     test.expect(8);
 
     var input,expected,settings;
@@ -438,11 +446,11 @@ exports['preprocess'] = {
 
     test.done();
   },
-  'include files': function(test) {
-    test.expect(4);
+  '@include files': function(test) {
+    test.expect(10);
 
-    var input,expected,settings;
-    input = "a<!-- @include include.txt -->c";
+    var input,expected;
+    input = "a<!-- @include include.html -->c";
     expected = "a!foobar!!bazqux!c";
     test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should include files');
 
@@ -450,39 +458,87 @@ exports['preprocess'] = {
     expected = "a!foobar!\n c";
     test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should include files and indent if ending with a newline');
 
-    input = "a/* @include static.txt */c";
-    expected = "a!bazqux!c";
-    test.equal(pp.preprocess(input, { srcDir : 'test'},'js'), expected, 'Should include files (js)');
+    input = "a/* @include include.block.js */c";
+    expected = "a!foobar!!bazqux!c";
+    test.equal(pp.preprocess(input, { srcDir : 'test'},'js'), expected, 'Should include files (js, block)');
 
-    input = "a\n@include static.txt\nc";
-    expected = "a\n!bazqux!\nc";
+    input = "a/* @include includenewline.txt */c";
+    expected = "a!foobar!\n c";
+    test.equal(pp.preprocess(input, { srcDir : 'test'},'js'), expected, 'Should include files and indent if ending with a newline (js, block)');
+
+    input = "a\n// @include include.js\nc";
+    expected = "a\n!foobar!\n!bazqux!\nc";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}, 'js'), expected, 'Should include files (js, line)');
+
+    input = "a\n // @include includenewline.txt\nc";
+    expected = "a\n !foobar!\n \nc";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}, 'js'), expected, 'Should include files and indent if ending with a newline (js, line)');
+
+    input = "a\n@include include.txt\nc";
+    expected = "a\n!foobar!\n!bazqux!\nc";
     test.equal(pp.preprocess(input, { srcDir : 'test'},'simple'), expected, 'Should include files (simple)');
+
+    input = "a\n @include includenewline.txt\nc";
+    expected = "a\n !foobar!\n \nc";
+    test.equal(pp.preprocess(input, { srcDir : 'test'},'simple'), expected, 'Should include files and indent if ending with a newline (simple)');
+
+    input = "a\n# @include include.coffee\nc";
+    expected = "a\n!foobar!\n!bazqux!\nc";
+    test.equal(pp.preprocess(input, { srcDir : 'test'},'coffee'), expected, 'Should include files (coffee)');
+
+    input = "a\n # @include includenewline.txt\nc";
+    expected = "a\n !foobar!\n \nc";
+    test.equal(pp.preprocess(input, { srcDir : 'test'},'coffee'), expected, 'Should include files and indent if ending with a newline (coffee)');
 
     test.done();
   },
-  'static include files': function(test) {
-    test.expect(4);
+  '@include-static files': function(test) {
+    test.expect(10);
 
     var input,expected;
-    input = "a<!-- @include-static include.txt -->c";
+    input = "a<!-- @include-static include.html -->c";
     expected = "a!foobar!<!-- @include static.txt -->c";
     test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should include files, but not recursively');
 
     input = "a<!-- @include-static includenewline.txt -->c";
     expected = "a!foobar!\n c";
-    test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should include-static files and indent if ending with a newline, just like include');
+    test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should include-static files and indent if ending with a newline, just like @include');
 
-    input = "a/* @include-static include.txt */c";
-    expected = "a!foobar!<!-- @include static.txt -->c";
-    test.equal(pp.preprocess(input, { srcDir : 'test'},'js'), expected, 'Should include files (js), but not recursively');
+    input = "a/* @include-static include.block.js */c";
+    expected = "a!foobar!/* @include static.txt */c";
+    test.equal(pp.preprocess(input, { srcDir : 'test'},'js'), expected, 'Should include files (js, block), but not recursively');
+
+    input = "a/* @include-static includenewline.txt */c";
+    expected = "a!foobar!\n c";
+    test.equal(pp.preprocess(input, { srcDir : 'test'},'js'), expected, 'Should include-static files and indent if ending with a newline (js, block), just like @include');
+
+    input = "a\n// @include-static include.js\nc";
+    expected = "a\n!foobar!\n// @include static.txt\nc";
+    test.equal(pp.preprocess(input, { srcDir : 'test'},'js'), expected, 'Should include files (js, line), but not recursively');
+
+    input = "a\n // @include-static includenewline.txt\nc";
+    expected = "a\n !foobar!\n \nc";
+    test.equal(pp.preprocess(input, { srcDir : 'test'},'js'), expected, 'Should include-static files and indent if ending with a newline (js, line), just like @include');
 
     input = "a\n@include-static include.txt\nc";
-    expected = "a\n!foobar!<!-- @include static.txt -->\nc";
+    expected = "a\n!foobar!\n@include static.txt\nc";
     test.equal(pp.preprocess(input, { srcDir : 'test'},'simple'), expected, 'Should include files (simple), but not recursively');
+
+    input = "a\n @include-static includenewline.txt\nc";
+    expected = "a\n !foobar!\n \nc";
+    test.equal(pp.preprocess(input, { srcDir : 'test'},'simple'), expected, 'Should include files and indent if ending with a newline (simple), just like @include');
+
+    input = "a\n# @include-static include.coffee\nc";
+    expected = "a\n!foobar!\n# @include static.txt\nc";
+    test.equal(pp.preprocess(input, { srcDir : 'test'},'coffee'), expected, 'Should include files (coffee), but not recursively');
+
+    input = "a\n # @include-static includenewline.txt\nc";
+    expected = "a\n !foobar!\n \nc";
+    test.equal(pp.preprocess(input, { srcDir : 'test'},'coffee'), expected, 'Should include files and indent if ending with a newline (coffee), just like @include');
 
     test.done();
   },
-  'extend files': function(test) {
+  '@extend files': function(test) {
     test.expect(3);
 
     var input,expected,settings;
@@ -501,26 +557,54 @@ exports['preprocess'] = {
 
     test.done();
   },
-  'echo': function(test) {
-    test.expect(3);
+  '@echo': function(test) {
+    test.expect(10);
 
-    var input,expected,settings;
+    var input,expected;
 
     input = "a<!-- @echo FINGERPRINT -->c";
     expected = "a0xDEADBEEFc";
-    test.equal(pp.preprocess(input, { FINGERPRINT: '0xDEADBEEF'}), expected, 'Should include echo statement');
+    test.equal(pp.preprocess(input, {FINGERPRINT: '0xDEADBEEF'}), expected, 'Should resolve and echo variables');
 
-    input = "a<!-- @echo 'FOO' -->c";
-    expected = "aFOOc";
+    input = "a<!-- @echo '-FOO*' -->c";
+    expected = "a-FOO*c";
     test.equal(pp.preprocess(input), expected, 'Should echo strings');
 
-    input = "a\n@echo 'FOO'\nc";
-    expected = "a\nFOO\nc";
-    test.equal(pp.preprocess(input,{},'simple'), expected, 'Should echo strings');
+    input = "a/* @echo FINGERPRINT */c";
+    expected = "a0xDEADBEEFc";
+    test.equal(pp.preprocess(input, {FINGERPRINT: '0xDEADBEEF'}, 'js'), expected, 'Should resolve and echo variables (js, block)');
+
+    input = "a/* @echo '-FOO*' */c";
+    expected = "a-FOO*c";
+    test.equal(pp.preprocess(input, {}, 'js'), expected, 'Should echo strings (js, block)');
+
+    input = "a\n// @echo FINGERPRINT\nc";
+    expected = "a\n0xDEADBEEF\nc";
+    test.equal(pp.preprocess(input, {FINGERPRINT: '0xDEADBEEF'}, 'js'), expected, 'Should resolve and echo variables (js, line)');
+
+    input = "a\n// @echo '-FOO*'\nc";
+    expected = "a\n-FOO*\nc";
+    test.equal(pp.preprocess(input, {}, 'js'), expected, 'Should echo strings (js, line)');
+
+    input = "a\n@echo FINGERPRINT\nc";
+    expected = "a\n0xDEADBEEF\nc";
+    test.equal(pp.preprocess(input, {FINGERPRINT: '0xDEADBEEF'}, 'simple'), expected, 'Should resolve and echo variables (simple)');
+
+    input = "a\n@echo '-FOO*'\nc";
+    expected = "a\n-FOO*\nc";
+    test.equal(pp.preprocess(input,{},'simple'), expected, 'Should echo strings (simple)');
+
+    input = "a\n# @echo FINGERPRINT\nc";
+    expected = "a\n0xDEADBEEF\nc";
+    test.equal(pp.preprocess(input, {FINGERPRINT: '0xDEADBEEF'}, 'coffee'), expected, 'Should resolve and echo variables (coffee)');
+
+    input = "a\n# @echo '-FOO*'\nc";
+    expected = "a\n-FOO*\nc";
+    test.equal(pp.preprocess(input,{},'coffee'), expected, 'Should echo strings (coffee)');
 
     test.done();
   },
-  'foreach_array': function(test) {
+  '@foreach with array': function(test) {
     test.expect(4);
 
     var input,expected,settings;
@@ -543,7 +627,7 @@ exports['preprocess'] = {
 
     test.done();
   },
-  'foreach_object': function(test) {
+  '@foreach with object': function(test) {
     test.expect(2);
 
     var input,expected,settings;
@@ -558,7 +642,7 @@ exports['preprocess'] = {
 
     test.done();
   },
-  'foreach_mixing': function(test) {
+  '@foreach mixing': function(test) {
     test.expect(4);
 
     var input,expected,settings;
@@ -581,7 +665,7 @@ exports['preprocess'] = {
 
     test.done();
   },
-  'exec': function(test) {
+  '@exec': function(test) {
     test.expect(30);
 
     var input,expected;
@@ -680,7 +764,7 @@ exports['preprocess'] = {
 
     expected = "aa0xDEADBEEFbb";
     pp.preprocessFileSync('test/fixtures/processFileSyncTest.html', 'test/tmp/processFileSyncTest.dest.html', { TEST : '0xDEADBEEF'});
-    var actual = fs.readFileSync('test/tmp/processFileSyncTest.dest.html').toString()
+    var actual = fs.readFileSync('test/tmp/processFileSyncTest.dest.html').toString();
     test.equal(actual, expected, 'Should process a file to disk');
     test.done();
   },
