@@ -1,2 +1,3 @@
 !foobar!
+@exec hello('simple')
 @include static.txt

@@ -1,1 +1,2 @@
-!foobar!/* @include static.txt */
+!foobar!/* @exec hello('js') */
+/* @include static.txt */
