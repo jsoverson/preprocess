@@ -165,7 +165,7 @@ exports['preprocess'] = {
     test.done();
   },
   'preprocess @if in javascript': function(test) {
-    test.expect(7);
+    test.expect(6);
 
     var input,expected;
 
@@ -210,10 +210,6 @@ exports['preprocess'] = {
     input = "a/* @if NODE_ENV=='production' **b/* @endif */c";
     expected = "abc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'production'}, 'js'), expected, 'Should include if match (hidden by default syntax)');
-
-    input = "a/* @if NODE_ENV=='production' **b/* @endif */c";
-    expected = "ac";
-    test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}, 'js'), expected, 'Should not include if not match (hidden by default syntax)');
 
     test.done();
   },
@@ -735,6 +731,53 @@ exports['preprocess'] = {
     input = "a\n# @exec hello(\"Chuck Norris\", buddy)\nc";
     expected = "a\nHello Chuck Norris,Michael Jackson!\nc";
     test.equal(pp.preprocess(input, {hello: hello.bind(null, test, 2), buddy: 'Michael Jackson'}, 'coffee'), expected, 'Should execute exec statement with two parameters: one string and one variable (coffee)');
+
+    test.done();
+  },
+  'preprocess javascript (hidden by default syntax)': function(test) {
+    test.expect(11);
+
+    var input,expected;
+
+    input = "a/* @if NODE_ENV=='dev' ** /* @echo 'b' ** /* @endif */c";
+    expected = "a bc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}, 'js'), expected, 'Should process @if and exec nested @echo');
+
+    input = "a/* @if NODE_ENV=='dev' ** /* @exec hello('b') ** /* @endif */c";
+    expected = "a Hello b!c";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev', hello: hello.bind(null, test, 1)}, 'js'), expected, 'Should process @if and exec nested @exec');
+
+    input = "a/* @if NODE_ENV=='dev' ** /* @include static.txt ** /* @endif */c";
+    expected = "a !bazqux!c";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev', srcDir: 'test'}, 'js'), expected, 'Should process @if and exec nested @include');
+
+    input = "a/* @if NODE_ENV=='dev' ** /* @include-static static.txt ** /* @endif */c";
+    expected = "a !bazqux!c";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev', srcDir: 'test'}, 'js'), expected, 'Should process @if and exec nested @include-static');
+
+    input = "a/* @if NODE_ENV=='dev' ** /* @exclude ** b /* @endexclude ** /* @endif */c";
+    expected = "ac";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}, 'js'), expected, 'Should process @if and exec nested @exclude');
+
+    input = "a/* @if NODE_ENV=='dev' ** /* @extend extend.js **c/* @endextend ** /* @endif */c";
+    expected = "aacbc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev', srcDir: 'test'}, 'js'), expected, 'Should process @if and exec nested @extend');
+
+    input = "a/* @extend extend.js ** /* @if NODE_ENV=='dev' **c/* @endif ** /* @endextend */c";
+    expected = "aacbc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev', srcDir: 'test'}, 'js'), expected, 'Should process @extend and exec nested @if');
+
+    input = "a/* @extend extend.js ** /* @ifdef NODE_ENV **c/* @endif ** /* @endextend */c";
+    expected = "aacbc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev', srcDir: 'test'}, 'js'), expected, 'Should process @extend and exec nested @ifdef');
+
+    input = "a/* @extend extend.js ** /* @ifndef NODE_ENV **c/* @endif ** /* @endextend */c";
+    expected = "aabc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev', srcDir: 'test'}, 'js'), expected, 'Should process @extend and exec nested @ifndef');
+
+    input = "a/* @if NODE_ENV=='dev' ** /* @foreach $var in ARR **$var/* @endfor ** /* @endif */c";
+    expected = "abcc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev', ARR: "['b', 'c']"}, 'js'), expected, 'Should process @if and exec nested @extend');
 
     test.done();
   },
