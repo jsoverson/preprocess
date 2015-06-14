@@ -187,7 +187,7 @@ angular.module('myModule', ['dep1'
 
 ```
 
-*Note: Hidden by default blocks only work with block comments (`/* */`) but not with line comments (`//`).*
+_Note: Hidden by default blocks only work with block comments (`/* */`) but not with line comments (`//`)._
 
 CSS example
 
@@ -253,6 +253,7 @@ pp.preprocessFileSync(src, dest, context);
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using jshint
 
 ## Release History
+ - 2.4.0 Added hidden by default configuration blocks for js (via @mallowigi, #40).
  - 2.3.1 Fixed @echo and @exec directives to allow `-` and `*` characters (fixes #21, #45, #51), fixed @exec with multiple params (fixes #54).
  - 2.3.0 Added support for @include-static
  - 2.2.0 Added support for @foreach and @extend
