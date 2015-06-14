@@ -261,6 +261,7 @@ changed functionality. Lint and test your code using jshint
   params (fixes #54).
  - 2.3.0 Added support for @include-static
  - 2.2.0 Added support for @foreach and @extend
+ - 2.1.1 Added support for .styl files via js regex (via @nsonnad)
  - 2.1.0 Added automatic support for numerous formats, merged @exec, hidden by default html tags, added simple directives
  - 2.0.0 Added ability to echo strings, added conditional comments, removed lodash, merged 17, 13, 15, 16
  - 1.2.0 Added processing for hash-style comments (via @marsch). Added more file aliases.
