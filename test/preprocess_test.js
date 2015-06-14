@@ -333,13 +333,17 @@ exports['preprocess'] = {
     test.done();
   },
   'preprocess @exclude': function(test) {
-    test.expect(3);
+    test.expect(4);
 
     var input,expected,settings;
 
     input = "a<!-- @exclude -->b<!-- @endexclude -->c";
     expected = "ac";
     test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should exclude');
+
+    input = "a<!-- @exclude -->b<!-- @endexclude -->c<!-- @exclude -->d<!-- @endexclude -->e";
+    expected = "ace";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should exclude multiple excludes in one line');
 
     input = "a\n<!-- @exclude -->\nb\n<!-- @endexclude -->\nc";
     expected = "a\nc";
@@ -541,12 +545,17 @@ exports['preprocess'] = {
     test.done();
   },
   '@extend files': function(test) {
-    test.expect(4);
+    test.expect(5);
 
     var input,expected;
+
     input = "<!-- @extend extend.html -->qr<!-- @endextend -->";
     expected = "aqrb";
     test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should extend files');
+
+    input = "x<!-- @extend extend.html -->qr<!-- @endextend -->y<!-- @extend extend.html -->hi<!-- @endextend -->z";
+    expected = "xaqrbyahibz";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should extend files with multiple extends in one line');
 
     input = "<!-- @extend extend.html -->\nqa\n<!-- @endextend -->";
     expected = "aqab";
