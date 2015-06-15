@@ -29,9 +29,11 @@
     "test": "grunt test"
   },
   "devDependencies": {
-    "grunt-contrib-jshint": "~0.11.0",
     "grunt": "~0.4.1",
-    "grunt-contrib-nodeunit": "~0.4.0"
+    "grunt-contrib-jshint": "~0.11.0",
+    "grunt-contrib-nodeunit": "~0.4.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "load-grunt-tasks": "~3.1.0"
   },
   "keywords": [
     "directive",
