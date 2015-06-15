@@ -263,8 +263,9 @@ exports['preprocess'] = {
       "    host = 'localhost'\n" +
       "    protocol = 'http'\n" +
       "    port = 3001\n" +
+      "\n" +
       "    console.log \"Socket info\", protocol, host, port";
-    test.equal(pp.preprocess(input, { NODE_ENV: 'development'}, 'coffee'), expected, 'Should not include if not match');
+    test.equal(pp.preprocess(input, { NODE_ENV: 'development'}, 'coffee'), expected, 'Should include if match');
 
     test.done();
   },
@@ -638,7 +639,7 @@ exports['preprocess'] = {
     test.done();
   },
   '@extend files': function(test) {
-    test.expect(11);
+    test.expect(9);
 
     var input,expected;
 
@@ -653,11 +654,6 @@ exports['preprocess'] = {
     input = "<!-- @extend extend.html -->\nqa\n<!-- @endextend -->";
     expected = "aqab";
     test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should extend files while stripping newlines from inserted content');
-
-    input = "<!-- @extend extendadv.html -->\nqa\n<!-- @endextend -->";
-    expected = "a\r  b\r  red\r  Hello extend!\r  qa\rc";
-    test.equal(pp.preprocess(input, { srcDir : 'test', BLUE: "red", hello: hello.bind(null, test, 1)}), expected,
-      'Should extend files while preserving newlines in target file');
 
     input = "/* @extend extend.js */qr/* @endextend */";
     expected = "aqrb";
@@ -987,10 +983,69 @@ exports['preprocess'] = {
 
     test.done();
   },
+  'handle newlines in all possible formats': function(test) {
+    test.expect(8);
+
+    var input,expected;
+
+    input = "a\n" +
+      "<!-- @ifdef TEST -->\n" +
+      "b\n" +
+      "<!-- @endif -->\n" +
+      "c";
+    expected = "a\nb\nc";
+    test.equal(pp.preprocess(input, {TEST: ""}), expected, 'Should handle \\n (Unix) style EOLs');
+
+    input = "a\r\n" +
+      "<!-- @ifdef TEST -->\r\n" +
+      "b\r\n" +
+      "<!-- @endif -->\r\n" +
+      "c";
+    expected = "a\r\nb\r\nc";
+    test.equal(pp.preprocess(input, {TEST: ""}), expected, 'Should handle \\r\\n (Windows) style EOLs');
+
+    input = "a\r" +
+      "<!-- @ifdef TEST -->\r" +
+      "b\r" +
+      "<!-- @endif -->\r" +
+      "c";
+    expected = "a\rb\rc";
+    test.equal(pp.preprocess(input, {TEST: ""}), expected, 'Should handle \\r (legacy Mac) style EOLs');
+
+    var osEol = require("os").EOL;
+    input = "a\r" +
+      "<!-- @ifdef TEST -->\r\n" +
+      "b\n" +
+      "<!-- @endif -->\r" +
+      "c";
+    expected = "a" + osEol + "b" + osEol + "c";
+    test.equal(pp.preprocess(input, {TEST: ""}), expected, 'Should replace EOL in sources with mixed style EOLs with the EOL from current OS');
+
+    // includenewline.txt has \n style EOLs
+    input = "a\r" +
+      "<!-- @include includenewline.txt -->\r" +
+      "b\r";
+    expected = "a\r!foobar!\r\rb\r";
+    test.equal(pp.preprocess(input, {srcDir: "test"}), expected, 'Should convert EOLs from included files into EOLs from target file when using @include');
+
+    input = "a\r" +
+      "<!-- @include-static includenewline.txt -->\r" +
+      "b\r";
+    expected = "a\r!foobar!\r\rb\r";
+    test.equal(pp.preprocess(input, {srcDir: "test"}), expected, 'Should convert EOLs from included files into EOLs from target file when using @include-static');
+
+    // extendadv.html has \r style EOLs
+    input = "a\n<!-- @extend extendadv.html -->\nqa\n<!-- @endextend -->\n\nc";
+    expected = "a\na\n  b\n  red\n  Hello extend!\n  qa\nc\nc";
+    test.equal(pp.preprocess(input, { srcDir : 'test', BLUE: "red", hello: hello.bind(null, test, 1)}), expected,
+      'Should extend files and adapt all EOLs from file to be included to EOLs in target file when using @extend');
+
+    test.done();
+  },
   'default to env': function(test) {
     test.expect(1);
 
-    var input,expected,settings;
+    var input,expected;
 
     input = "a<!-- @echo FINGERPRINT -->c";
     expected = "a0xDEADBEEFc";
@@ -1003,7 +1058,7 @@ exports['preprocess'] = {
   'processFile': function(test) {
     test.expect(1);
 
-    var input,expected,settings;
+    var input,expected;
 
     expected = "a0xDEADBEEFb";
     pp.preprocessFile('test/fixtures/processFileTest.html', 'test/tmp/processFileTest.dest.html', { TEST : '0xDEADBEEF'}, function(){
@@ -1015,7 +1070,7 @@ exports['preprocess'] = {
   'processFileSync': function(test) {
     test.expect(1);
 
-    var input,expected,settings;
+    var input,expected;
 
     expected = "aa0xDEADBEEFbb";
     pp.preprocessFileSync('test/fixtures/processFileSyncTest.html', 'test/tmp/processFileSyncTest.dest.html', { TEST : '0xDEADBEEF'});
@@ -1026,7 +1081,7 @@ exports['preprocess'] = {
   'multilevelContext': function(test) {
     test.expect(3);
 
-    var input,expected,settings;
+    var input,expected;
     var context = {'FOO' :{'BAR':'test'}};
 
     input = "// @echo FOO.BAR";

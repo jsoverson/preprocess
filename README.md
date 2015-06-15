@@ -254,9 +254,12 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 changed functionality. Lint and test your code using jshint
 
 ## Release History
- - 2.4.0 Added hidden by default configuration blocks for js (via @mallowigi, #40), fixed `@exec` in files included via
-  `@include` and `@extend` (fixes #58), changed `@extend` and `@exclude` html regex so that directives may appear more than
-  once in one line (fixes #36), fixed multiple issues with coffescript syntax (fixes #39).
+ - 2.4.0
+   - Added hidden by default configuration blocks for js (via @mallowigi, #40)
+   - fixed `@exec` in files included via `@include` and `@extend` (fixes #58)
+   - changed `@extend` and `@exclude` html regex so that directives may appear more than once in one line (fixes #36)
+   - fixed multiple issues with coffescript syntax (fixes #39)
+   - fixed multiple issues with newlines (fixes #8)
  - 2.3.1 Fixed @echo and @exec directives to allow `-` and `*` characters (fixes #21, #45, #51), fixed @exec with multiple
   params (fixes #54).
  - 2.3.0 Added support for @include-static
