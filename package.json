@@ -45,5 +45,8 @@
     "process",
     "preprocess",
     "pragma"
-  ]
+  ],
+  "dependencies": {
+    "xregexp": "^2.0.0"
+  }
 }
