@@ -214,7 +214,7 @@ exports['preprocess'] = {
     test.done();
   },
   'preprocess @if in coffeescript': function(test) {
-    test.expect(4);
+    test.expect(5);
 
     var input, expected, settings;
 
@@ -250,6 +250,21 @@ exports['preprocess'] = {
       "c";
     expected = "a\nc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}, 'coffee'), expected, 'Should not include if not match');
+
+    input =
+      "    ## @if NODE_ENV == 'development'\n" +
+      "    host = 'localhost'\n" +
+      "    protocol = 'http'\n" +
+      "    port = 3001\n" +
+      "    ## @endif\n" +
+      "\n" +
+      "    console.log \"Socket info\", protocol, host, port";
+    expected =
+      "    host = 'localhost'\n" +
+      "    protocol = 'http'\n" +
+      "    port = 3001\n" +
+      "    console.log \"Socket info\", protocol, host, port";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'development'}, 'coffee'), expected, 'Should not include if not match');
 
     test.done();
   },
@@ -333,25 +348,41 @@ exports['preprocess'] = {
     test.done();
   },
   'preprocess @exclude': function(test) {
-    test.expect(4);
+    test.expect(8);
 
-    var input,expected,settings;
+    var input,expected;
 
     input = "a<!-- @exclude -->b<!-- @endexclude -->c";
     expected = "ac";
-    test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should exclude');
+    test.equal(pp.preprocess(input, {}), expected, 'Should exclude');
 
     input = "a<!-- @exclude -->b<!-- @endexclude -->c<!-- @exclude -->d<!-- @endexclude -->e";
     expected = "ace";
-    test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should exclude multiple excludes in one line');
+    test.equal(pp.preprocess(input, {}), expected, 'Should exclude multiple excludes in one line');
 
     input = "a\n<!-- @exclude -->\nb\n<!-- @endexclude -->\nc";
     expected = "a\nc";
-    test.equal(pp.preprocess(input, { NODE_ENV: 'production'}), expected, 'Should exclude with newlines');
+    test.equal(pp.preprocess(input, {}), expected, 'Should exclude with newlines');
 
-    input = "var test = 1;\n// @exclude\nvar test = 4;\n// @endexclude\nvar test2 = 5;";
-    expected = "var test = 1;\nvar test2 = 5;";
-    test.equal(pp.preprocess(input, { NODE_ENV: 'production'}, 'js'), expected, 'Should exclude js');
+    input = "a\n// @exclude\nb\n// @endexclude\nc";
+    expected = "a\nc";
+    test.equal(pp.preprocess(input, {}, 'js'), expected, 'Should exclude (js, line)');
+
+    input = "a/* @exclude */b/* @endexclude */c";
+    expected = "ac";
+    test.equal(pp.preprocess(input, {}, 'js'), expected, 'Should exclude (js, block)');
+
+    input = "a\n/* @exclude */\nb\n/* @endexclude */\nc";
+    expected = "a\nc";
+    test.equal(pp.preprocess(input, {}, 'js'), expected, 'Should exclude with newlines (js, block)');
+
+    input = "a\n# @exclude\nb\n# @endexclude\nc";
+    expected = "a\nc";
+    test.equal(pp.preprocess(input, {}, 'coffee'), expected, 'Should exclude (coffee)');
+
+    input = "a\n## @exclude\nb\n## @endexclude\nc";
+    expected = "a\nc";
+    test.equal(pp.preprocess(input, {}, 'coffee'), expected, 'Should exclude (coffee, multiple hashes)');
 
     test.done();
   },
@@ -375,7 +406,7 @@ exports['preprocess'] = {
     test.done();
   },
   '@ifdef': function(test) {
-    test.expect(8);
+    test.expect(11);
 
     var input,expected,settings;
 
@@ -411,10 +442,37 @@ exports['preprocess'] = {
     expected = "abc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'},'js'), expected, 'Success case, should be included');
 
+    input =
+      "a\n" +
+      "# @ifdef FLAG\n" +
+      "b\n" +
+      "# @endif\n" +
+      "c";
+    expected = "a\nc";
+    test.equal(pp.preprocess(input, { },'coffee'), expected, 'Fail case, should not be included (coffee)');
+
+    input =
+      "a\n" +
+      "## @ifdef FLAG\n" +
+      "b\n" +
+      "## @endif\n" +
+      "c";
+    expected = "a\nc";
+    test.equal(pp.preprocess(input, { },'coffee'), expected, 'Fail case, should not be included (coffee, multiple hashes)');
+
+    input =
+      "a\n" +
+      "# @ifdef FLAG\n" +
+      "b\n" +
+      "# @endif\n" +
+      "c";
+    expected = "a\nb\nc";
+    test.equal(pp.preprocess(input, {FLAG: 1 },'coffee'), expected, 'Success case, should be included (coffee)');
+
     test.done();
   },
   '@ifndef': function(test) {
-    test.expect(8);
+    test.expect(11);
 
     var input,expected,settings;
 
@@ -450,10 +508,37 @@ exports['preprocess'] = {
     expected = "ac";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'},'js'), expected, 'Success case, should be included');
 
+    input =
+      "a\n" +
+      "# @ifndef FLAG\n" +
+      "b\n" +
+      "# @endif\n" +
+      "c";
+    expected = "a\nb\nc";
+    test.equal(pp.preprocess(input, { },'coffee'), expected, 'Success case, should be included (coffee)');
+
+    input =
+      "a\n" +
+      "## @ifndef FLAG\n" +
+      "b\n" +
+      "## @endif\n" +
+      "c";
+    expected = "a\nb\nc";
+    test.equal(pp.preprocess(input, { },'coffee'), expected, 'Success case, should be included (coffee, multiple hashes)');
+
+    input =
+      "a\n" +
+      "# @ifndef FLAG\n" +
+      "b\n" +
+      "# @endif\n" +
+      "c";
+    expected = "a\nc";
+    test.equal(pp.preprocess(input, {FLAG: 1 },'coffee'), expected, 'Fail case, should not be included (coffee)');
+
     test.done();
   },
   '@include files': function(test) {
-    test.expect(15);
+    test.expect(17);
 
     var input,expected;
     input = "a<!-- @include include.html -->c";
@@ -492,6 +577,10 @@ exports['preprocess'] = {
     expected = "a\n!foobar!\nHello coffee!\n!bazqux!\nc";
     test.equal(pp.preprocess(input, { srcDir : 'test', hello: hello.bind(null, test, 1)},'coffee'), expected, 'Should include files (coffee)');
 
+    input = "a\n## @include include.coffee\nc";
+    expected = "a\n!foobar!\nHello coffee!\n!bazqux!\nc";
+    test.equal(pp.preprocess(input, { srcDir : 'test', hello: hello.bind(null, test, 1)},'coffee'), expected, 'Should include files (coffee, multiple hashes)');
+
     input = "a\n # @include includenewline.txt\nc";
     expected = "a\n !foobar!\n \nc";
     test.equal(pp.preprocess(input, { srcDir : 'test'},'coffee'), expected, 'Should include files and indent if ending with a newline (coffee)');
@@ -499,7 +588,7 @@ exports['preprocess'] = {
     test.done();
   },
   '@include-static files': function(test) {
-    test.expect(10);
+    test.expect(11);
 
     var input,expected;
     input = "a<!-- @include-static include.html -->c";
@@ -538,6 +627,10 @@ exports['preprocess'] = {
     expected = "a\n!foobar!\n# @exec hello('coffee')\n# @include static.txt\nc";
     test.equal(pp.preprocess(input, { srcDir : 'test', hello: hello.bind(null, test, 1)},'coffee'), expected, 'Should include files (coffee), but not recursively');
 
+    input = "a\n## @include-static include.coffee\nc";
+    expected = "a\n!foobar!\n# @exec hello('coffee')\n# @include static.txt\nc";
+    test.equal(pp.preprocess(input, { srcDir : 'test', hello: hello.bind(null, test, 1)},'coffee'), expected, 'Should include files (coffee, multiple hashes), but not recursively');
+
     input = "a\n # @include-static includenewline.txt\nc";
     expected = "a\n !foobar!\n \nc";
     test.equal(pp.preprocess(input, { srcDir : 'test'},'coffee'), expected, 'Should include files and indent if ending with a newline (coffee), just like @include');
@@ -545,7 +638,7 @@ exports['preprocess'] = {
     test.done();
   },
   '@extend files': function(test) {
-    test.expect(5);
+    test.expect(11);
 
     var input,expected;
 
@@ -566,10 +659,34 @@ exports['preprocess'] = {
     test.equal(pp.preprocess(input, { srcDir : 'test', BLUE: "red", hello: hello.bind(null, test, 1)}), expected,
       'Should extend files while preserving newlines in target file');
 
+    input = "/* @extend extend.js */qr/* @endextend */";
+    expected = "aqrb";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}, 'js'), expected, 'Should extend files (js, block)');
+
+    input = "x/* @extend extend.js */qr/* @endextend */y/* @extend extend.js */hi/* @endextend */z";
+    expected = "xaqrbyahibz";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}, 'js'), expected, 'Should extend files with multiple extends in one line (js, block)');
+
+    input = "/* @extend extend.js */\nqa\n/* @endextend */";
+    expected = "aqab";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}, 'js'), expected, 'Should extend files while stripping newlines from inserted content (js, block)');
+
+    input = "// @extend extend.js\nqr\n// @endextend";
+    expected = "aqrb";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}, 'js'), expected, 'Should extend files while stripping newlines from inserted content (js, line)');
+
+    input = "# @extend extend.coffee\nqr\n# @endextend";
+    expected = "a\nqr\nb";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}, 'coffee'), expected, 'Should extend files while stripping newlines from inserted content (coffee)');
+
+    input = "## @extend extend.coffee\nqr\n## @endextend";
+    expected = "a\nqr\nb";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}, 'coffee'), expected, 'Should extend files while stripping newlines from inserted content (coffee, multiple hashes)');
+
     test.done();
   },
   '@echo': function(test) {
-    test.expect(10);
+    test.expect(11);
 
     var input,expected;
 
@@ -609,6 +726,10 @@ exports['preprocess'] = {
     expected = "a\n0xDEADBEEF\nc";
     test.equal(pp.preprocess(input, {FINGERPRINT: '0xDEADBEEF'}, 'coffee'), expected, 'Should resolve and echo variables (coffee)');
 
+    input = "a\n## @echo FINGERPRINT\nc";
+    expected = "a\n0xDEADBEEF\nc";
+    test.equal(pp.preprocess(input, {FINGERPRINT: '0xDEADBEEF'}, 'coffee'), expected, 'Should resolve and echo variables (coffee, multiple hashes)');
+
     input = "a\n# @echo '-FOO*'\nc";
     expected = "a\n-FOO*\nc";
     test.equal(pp.preprocess(input,{},'coffee'), expected, 'Should echo strings (coffee)');
@@ -616,9 +737,9 @@ exports['preprocess'] = {
     test.done();
   },
   '@foreach with array': function(test) {
-    test.expect(4);
+    test.expect(7);
 
-    var input,expected,settings;
+    var input,expected;
 
     input = "<!-- @foreach $ITEM in LIST -->$ITEM<!-- @endfor -->";
     expected = "a";
@@ -626,41 +747,65 @@ exports['preprocess'] = {
 
     input = "<!-- @foreach $ITEM in LIST -->$ITEM<!-- @endfor -->";
     expected = "ab";
-    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString()}), expected, 'Should run basic loop from Array with two items');
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString()}), expected, 'Should run basic loop from stringified Array with two items');
 
     input = "<!-- @foreach $ITEM in LIST -->$ITEM<!-- @endfor -->";
     expected = "ab";
-    test.equal(pp.preprocess(input, { LIST: "a,b"}), expected, 'Should run basic loop from Stringified list');
+    test.equal(pp.preprocess(input, { LIST: "['a','b']"}), expected, 'Should run basic loop string presented formatted Array');
 
-    input = "<!-- @foreach $ITEM in LIST -->$ITEM<!-- @endfor -->";
+    input = "/* @foreach $ITEM in LIST */$ITEM/* @endfor */";
     expected = "ab";
-    test.equal(pp.preprocess(input, { LIST: "['a','b']"}), expected, 'Should run basic loop String Presented Formatted Array');
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString()}, 'js'), expected, 'Should run basic loop string presented formatted Array (js, block)');
+
+    input = "// @foreach $ITEM in LIST\n$ITEM\n// @endfor";
+    expected = "a\nb\n";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString()}, 'js'), expected, 'Should run basic loop string presented formatted Array (js, line)');
+
+    input = "# @foreach $ITEM in LIST\n$ITEM\n# @endfor";
+    expected = "a\nb\n";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString()}, 'coffee'), expected, 'Should run basic loop string presented formatted Array (coffee)');
+
+    input = "## @foreach $ITEM in LIST\n$ITEM\n## @endfor";
+    expected = "a\nb\n";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString()}, 'coffee'), expected, 'Should run basic loop string presented formatted Array (coffee, multiple hashes)');
 
     test.done();
   },
   '@foreach with object': function(test) {
-    test.expect(2);
+    test.expect(6);
 
-    var input,expected,settings;
+    var input,expected;
+
+    input = "<!-- @foreach $ITEM in LIST -->ab<!-- @endfor -->";
+    expected = "abab";
+    test.equal(pp.preprocess(input, { LIST: '{"itemOne": "a", "itemTwo": "b"}'}), expected, 'Should run basic loop just repeating content');
 
     input = "<!-- @foreach $ITEM in LIST -->$ITEM<!-- @endfor -->";
     expected = "ab";
     test.equal(pp.preprocess(input, { LIST: '{"itemOne": "a", "itemTwo": "b"}'}), expected, 'Should run basic loop from Object with two items');
 
-    input = "<!-- @foreach $ITEM in LIST -->$ITEM<!-- @endfor -->";
+    input = "/* @foreach $ITEM in LIST */$ITEM/* @endfor */";
     expected = "ab";
-    test.equal(pp.preprocess(input, { LIST: JSON.stringify({'itemOne': 'a', 'itemTwo': 'b'})}), expected, 'Should run basic loop from Object with two items');
+    test.equal(pp.preprocess(input, { LIST: '{"itemOne": "a", "itemTwo": "b"}'}, 'js'), expected, 'Should run basic loop from Object with two items (js, block)');
+
+    input = "// @foreach $ITEM in LIST\n$ITEM\n// @endfor";
+    expected = "a\nb\n";
+    test.equal(pp.preprocess(input, { LIST: '{"itemOne": "a", "itemTwo": "b"}'}, 'js'), expected, 'Should run basic loop from Object with two items (js, line)');
+
+    input = "# @foreach $ITEM in LIST\n$ITEM\n# @endfor";
+    expected = "a\nb\n";
+    test.equal(pp.preprocess(input, { LIST: '{"itemOne": "a", "itemTwo": "b"}'}, 'coffee'), expected, 'Should run basic loop from Object with two items (coffee)');
+
+    input = "## @foreach $ITEM in LIST\n$ITEM\n## @endfor";
+    expected = "a\nb\n";
+    test.equal(pp.preprocess(input, { LIST: '{"itemOne": "a", "itemTwo": "b"}'}, 'coffee'), expected, 'Should run basic loop from Object with two items (coffee, multiple hashes)');
 
     test.done();
   },
   '@foreach mixing': function(test) {
-    test.expect(4);
+    test.expect(15);
 
-    var input,expected,settings;
-
-    input = "<!-- @foreach $ITEM in LIST -->ab<!-- @endfor -->";
-    expected = "abab";
-    test.equal(pp.preprocess(input, { LIST: JSON.stringify({'itemOne': 'a', 'itemTwo': 'b'})}), expected, 'Should run basic loop just repeating content');
+    var input,expected;
 
     input = "<!-- @foreach $ITEM in LIST --><div class='<!-- @echo LIST_CLASS -->'>$ITEM</div><!-- @endfor -->";
     expected = "<div class='list'>a</div><div class='list'>b</div>";
@@ -668,16 +813,64 @@ exports['preprocess'] = {
 
     input = "<!-- @foreach $ITEM in LIST -->a<!-- @ifdef NOVAR -->$ITEM<!-- @endif --><!-- @endfor -->";
     expected = "aa";
-    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString(), LIST_CLASS: 'list' }), expected, 'Loop with ifdef');
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString() }), expected, 'Loop with ifdef');
 
     input = "<!-- @foreach $ITEM in LIST -->a<!-- @ifndef NOVAR -->$ITEM<!-- @endif --><!-- @endfor -->";
     expected = "aaab";
-    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString(), LIST_CLASS: 'list' }), expected, 'Loop with ifndef');
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString() }), expected, 'Loop with ifndef');
+
+    input = "/* @foreach $ITEM in LIST *//* @echo LIST_CLASS */$ITEM/* @endfor */";
+    expected = "listalistb";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString(), LIST_CLASS: 'list' }, 'js'), expected, 'Duplicate loop with echo variable included in each (js, block)');
+
+    input = "/* @foreach $ITEM in LIST */a/* @ifdef NOVAR */$ITEM/* @endif *//* @endfor */";
+    expected = "aa";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString() }, 'js'), expected, 'Loop with ifdef (js, block)');
+
+    input = "/* @foreach $ITEM in LIST */a/* @ifndef NOVAR */$ITEM/* @endif *//* @endfor */";
+    expected = "aaab";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString() }, 'js'), expected, 'Loop with ifndef (js, block)');
+
+    input = "// @foreach $ITEM in LIST\n// @echo LIST_CLASS\n$ITEM\n// @endfor";
+    expected = "list\na\nlist\nb\n";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString(), LIST_CLASS: 'list' }, 'js'), expected, 'Duplicate loop with echo variable included in each (js, line)');
+
+    input = "// @foreach $ITEM in LIST\na\n// @ifdef NOVAR\n$ITEM\n// @endif\n// @endfor";
+    expected = "a\na\n";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString() }, 'js'), expected, 'Loop with ifdef (js, line)');
+
+    input = "// @foreach $ITEM in LIST\na\n// @ifndef NOVAR\n$ITEM\n// @endif\n// @endfor";
+    expected = "a\na\na\nb\n";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString() }, 'js'), expected, 'Loop with ifndef (js, line)');
+
+    input = "# @foreach $ITEM in LIST\n# @echo LIST_CLASS\n$ITEM\n# @endfor";
+    expected = "list\na\nlist\nb\n";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString(), LIST_CLASS: 'list' }, 'coffee'), expected, 'Duplicate loop with echo variable included in each (coffee)');
+
+    input = "## @foreach $ITEM in LIST\n## @echo LIST_CLASS\n$ITEM\n## @endfor";
+    expected = "list\na\nlist\nb\n";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString(), LIST_CLASS: 'list' }, 'coffee'), expected, 'Duplicate loop with echo variable included in each (coffee, multiple hashes)');
+
+    input = "# @foreach $ITEM in LIST\na\n# @ifdef NOVAR\n$ITEM\n# @endif\n# @endfor";
+    expected = "a\na\n";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString() }, 'coffee'), expected, 'Loop with ifdef (coffee)');
+
+    input = "## @foreach $ITEM in LIST\na\n## @ifdef NOVAR\n$ITEM\n## @endif\n## @endfor";
+    expected = "a\na\n";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString() }, 'coffee'), expected, 'Loop with ifdef (coffee, multiple hashes)');
+
+    input = "# @foreach $ITEM in LIST\na\n# @ifndef NOVAR\n$ITEM\n# @endif\n# @endfor";
+    expected = "a\na\na\nb\n";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString() }, 'coffee'), expected, 'Loop with ifndef (coffee)');
+
+    input = "## @foreach $ITEM in LIST\na\n## @ifndef NOVAR\n$ITEM\n## @endif\n## @endfor";
+    expected = "a\na\na\nb\n";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString() }, 'coffee'), expected, 'Loop with ifndef (coffee, multiple hashes)');
 
     test.done();
   },
   '@exec': function(test) {
-    test.expect(30);
+    test.expect(32);
 
     var input,expected;
 
@@ -736,6 +929,10 @@ exports['preprocess'] = {
     input = "a\n# @exec hello(\"Chuck Norris\", 'Gandhi')\nc";
     expected = "a\nHello Chuck Norris,Gandhi!\nc";
     test.equal(pp.preprocess(input, {hello: hello.bind(null, test, 2)}, 'coffee'), expected, 'Should execute exec statement with two parameters (coffee)');
+
+    input = "a\n## @exec hello(\"Chuck Norris\", 'Gandhi')\nc";
+    expected = "a\nHello Chuck Norris,Gandhi!\nc";
+    test.equal(pp.preprocess(input, {hello: hello.bind(null, test, 2)}, 'coffee'), expected, 'Should execute exec statement with two parameters (coffee, multiple hashes)');
 
     input = "a\n# @exec hello(\"Chuck Norris\", buddy)\nc";
     expected = "a\nHello Chuck Norris,Michael Jackson!\nc";
