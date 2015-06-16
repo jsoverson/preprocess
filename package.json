@@ -28,6 +28,9 @@
   "scripts": {
     "test": "grunt test"
   },
+  "dependencies": {
+    "xregexp": "^2.0.0"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.11.0",
