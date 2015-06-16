@@ -660,13 +660,17 @@ exports['preprocess'] = {
     test.done();
   },
   '@extend files': function(test) {
-    test.expect(11);
+    test.expect(12);
 
     var input,expected;
 
     input = "<!-- @extend extend.html -->qr<!-- @endextend -->";
     expected = "aqrb";
     test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should extend files');
+
+    input = "<!-- @extend extend.html -->q<!-- @extend extend.html -->x<!-- @endextend -->r<!-- @endextend -->";
+    expected = "aqaxbrb";
+    test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should support nested extend');
 
     input = "x<!-- @extend extend.html -->qr<!-- @endextend -->y<!-- @extend extend.html -->hi<!-- @endextend -->z";
     expected = "xaqrbyahibz";
