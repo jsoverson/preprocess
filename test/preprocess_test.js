@@ -165,7 +165,7 @@ exports['preprocess'] = {
     test.done();
   },
   'preprocess @if in javascript': function(test) {
-    test.expect(6);
+    test.expect(7);
 
     var input,expected;
 
@@ -210,6 +210,10 @@ exports['preprocess'] = {
     input = "a/* @if NODE_ENV=='production' **b/* @endif */c";
     expected = "abc";
     test.equal(pp.preprocess(input, { NODE_ENV: 'production'}, 'js'), expected, 'Should include if match (hidden by default syntax)');
+
+    input = "a/* @if true */b/* @if false */bad/* @endif */c/* @if true */d/* @endif */e/* @endif */f";
+    expected = "abcdef";
+    test.equal(pp.preprocess(input, {}, 'js'), expected, 'Should support nested if');
 
     test.done();
   },
@@ -407,7 +411,7 @@ exports['preprocess'] = {
     test.done();
   },
   '@ifdef': function(test) {
-    test.expect(11);
+    test.expect(12);
 
     var input,expected,settings;
 
@@ -470,10 +474,24 @@ exports['preprocess'] = {
     expected = "a\nb\nc";
     test.equal(pp.preprocess(input, {FLAG: 1 },'coffee'), expected, 'Success case, should be included (coffee)');
 
+    input =
+      "a\n" +
+      "# @ifdef FLAG\n" +
+      "b\n" +
+      "# @ifdef FLAG2\n" +
+      "bad\n" +
+      "# @endif\n" +
+      "c\n" +
+      "# @endif\n" +
+      "d";
+    expected = "a\nb\nc\nd";
+
+    test.equal(pp.preprocess(input, {FLAG: 1 },'coffee'), expected, 'Should support nested ifdef (coffee)');
+
     test.done();
   },
   '@ifndef': function(test) {
-    test.expect(11);
+    test.expect(12);
 
     var input,expected,settings;
 
@@ -508,6 +526,10 @@ exports['preprocess'] = {
     input = "a/* @ifndef NODE_ENV */b/* @endif */c";
     expected = "ac";
     test.equal(pp.preprocess(input, { NODE_ENV: 'dev'},'js'), expected, 'Success case, should be included');
+
+    input = "a<!-- @ifndef NDEF -->b<!-- @ifndef NODE_ENV -->bad<!-- @endif -->c<!-- @endif -->d";
+    expected = "abcd";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}), expected, 'Should support nested ifndef');
 
     input =
       "a\n" +
@@ -733,7 +755,7 @@ exports['preprocess'] = {
     test.done();
   },
   '@foreach with array': function(test) {
-    test.expect(7);
+    test.expect(8);
 
     var input,expected;
 
@@ -764,6 +786,10 @@ exports['preprocess'] = {
     input = "## @foreach $ITEM in LIST\n$ITEM\n## @endfor";
     expected = "a\nb\n";
     test.equal(pp.preprocess(input, { LIST: ['a','b'].toString()}, 'coffee'), expected, 'Should run basic loop string presented formatted Array (coffee, multiple hashes)');
+
+    input = "/* @foreach $ITEMA in LIST *//* @foreach $ITEMB in LIST */$ITEMA$ITEMB/* @endfor *//* @endfor */";
+    expected = "aaabbabb";
+    test.equal(pp.preprocess(input, { LIST: ['a','b'].toString()}, 'js'), expected, 'Should support nested foreach');
 
     test.done();
   },
