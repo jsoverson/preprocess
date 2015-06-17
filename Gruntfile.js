@@ -2,7 +2,7 @@
 
 module.exports = function(grunt) {
 
-  require("load-grunt-tasks")(grunt);
+  require('load-grunt-tasks')(grunt);
 
   // Project configuration.
   grunt.initConfig({
@@ -20,12 +20,12 @@ module.exports = function(grunt) {
     watch: {
       src: {
         options: {
-          interrupt: false
+          atBegin: true
         },
         files: [
-          "lib/**/*.js",
-          "test/**/*",
-          "!test/tmp/**/*"
+          'lib/**/*.js',
+          'test/**/*',
+          '!test/tmp/**/*'
         ],
         tasks: ["test"]
       }
@@ -34,7 +34,7 @@ module.exports = function(grunt) {
 
   // Default task.
   grunt.registerTask('test', ['jshint', 'nodeunit']);
-  grunt.registerTask('dev', ['test', 'watch']);
+  grunt.registerTask('dev', ['watch']);
   grunt.registerTask('default', ['test']);
 
 };
