@@ -568,16 +568,16 @@ exports['preprocess'] = {
     expected = "a!foobar!Hello html!!bazqux!c";
     test.equal(pp.preprocess(input, { srcDir : 'test', hello: hello.bind(null, test, 1)}), expected, 'Should include files');
 
-    input = "a<!-- @include includenewline.txt -->c";
-    expected = "a!foobar!\n c";
+    input = "a\n <!-- @include includenewline.txt -->c";
+    expected = "a\n !foobar!\n c";
     test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should include files and indent if ending with a newline');
 
-    input = "a/* @include include.block.js */c";
-    expected = "a!foobar!Hello js!\n !bazqux!c";
+    input = "a\n /* @include include.block.js */c";
+    expected = "a\n !foobar!Hello js!\n !bazqux!c";
     test.equal(pp.preprocess(input, { srcDir : 'test', hello: hello.bind(null, test, 1)},'js'), expected, 'Should include files (js, block)');
 
-    input = "a/* @include includenewline.txt */c";
-    expected = "a!foobar!\n c";
+    input = "a\n /* @include includenewline.txt */c";
+    expected = "a\n !foobar!\n c";
     test.equal(pp.preprocess(input, { srcDir : 'test'},'js'), expected, 'Should include files and indent if ending with a newline (js, block)');
 
     input = "a\n// @include include.js\nc";
@@ -618,16 +618,16 @@ exports['preprocess'] = {
     expected = "a!foobar!<!-- @exec hello('html') --><!-- @include static.txt -->c";
     test.equal(pp.preprocess(input, { srcDir : 'test', hello: hello.bind(null, test, 1)}), expected, 'Should include files, but not recursively');
 
-    input = "a<!-- @include-static includenewline.txt -->c";
-    expected = "a!foobar!\n c";
+    input = "a\n <!-- @include-static includenewline.txt -->c";
+    expected = "a\n !foobar!\n c";
     test.equal(pp.preprocess(input, { srcDir : 'test'}), expected, 'Should include-static files and indent if ending with a newline, just like @include');
 
-    input = "a/* @include-static include.block.js */c";
-    expected = "a!foobar!/* @exec hello('js') */\n /* @include static.txt */c";
+    input = "a\n /* @include-static include.block.js */c";
+    expected = "a\n !foobar!/* @exec hello('js') */\n /* @include static.txt */c";
     test.equal(pp.preprocess(input, { srcDir : 'test', hello: hello.bind(null, test, 1)},'js'), expected, 'Should include files (js, block), but not recursively');
 
-    input = "a/* @include-static includenewline.txt */c";
-    expected = "a!foobar!\n c";
+    input = "a\n /* @include-static includenewline.txt */c";
+    expected = "a\n !foobar!\n c";
     test.equal(pp.preprocess(input, { srcDir : 'test'},'js'), expected, 'Should include-static files and indent if ending with a newline (js, block), just like @include');
 
     input = "a\n// @include-static include.js\nc";
@@ -1042,7 +1042,7 @@ exports['preprocess'] = {
     expected = "a\rb\rc";
     test.equal(pp.preprocess(input, {TEST: ""}), expected, 'Should handle \\r (legacy Mac) style EOLs');
 
-    var osEol = require("os").EOL;
+    var osEol = require('os').EOL;
     input = "a\r" +
       "<!-- @ifdef TEST -->\r\n" +
       "b\n" +
