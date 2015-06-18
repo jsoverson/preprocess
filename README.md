@@ -1,4 +1,7 @@
-# preprocess  [![Build Status][ci-image]][ci-url] [![dependencies][deps-image]][deps-url] [![dev-dependencies][dev-deps-image]][dev-deps-url]
+# preprocess
+[![NPM][npm-image]][npm-url]
+
+[![Build Status][ci-image]][ci-url] [![dependencies][deps-image]][deps-url] [![dev-dependencies][dev-deps-image]][dev-deps-url]
 
 Preprocess HTML, JavaScript, and other files with directives based off custom or ENV configuration
 
@@ -281,6 +284,8 @@ Written by Jarrod Overson
 
 Licensed under the Apache 2.0 license.
 
+[npm-image]: https://nodei.co/npm/preprocess.png?downloads=true
+[npm-url]: https://www.npmjs.com/package/preprocess
 [ci-image]: https://travis-ci.org/jsoverson/preprocess.png?branch=master
 [ci-url]: https://travis-ci.org/jsoverson/preprocess
 [deps-image]: https://david-dm.org/jsoverson/preprocess.png
