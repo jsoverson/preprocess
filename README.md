@@ -259,7 +259,7 @@ changed functionality. Lint and test your code using jshint
 ## Release History
  - 2.4.0
    - All block directives (ones that have a start and an end token, like `@if`/`@endif`) are now processed recursively (via @Frizi, #61)
-   - Added hidden by default configuration blocks for js (via @mallowigi, #40)
+   - Added hidden by default configuration blocks for `js` (via @mallowigi, #40) and `html` (via @Frizi, #66)
    - fixed `@exec` in files included via `@include` and `@extend` (fixes #58)
    - changed `@extend` and `@exclude` html regex so that directives may appear more than once in one line (fixes #36)
    - fixed multiple issues with coffescript syntax (fixes #39)
