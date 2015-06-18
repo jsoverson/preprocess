@@ -966,6 +966,53 @@ exports['preprocess'] = {
 
     test.done();
   },
+  'preprocess html (hidden by default syntax)': function(test) {
+    test.expect(11);
+
+    var input,expected;
+
+    input = "a<!-- @if NODE_ENV=='dev' !> <!-- @echo 'b' !> <!-- @endif -->c";
+    expected = "a bc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}, 'html'), expected, 'Should process @if and exec nested @echo');
+
+    input = "a<!-- @if NODE_ENV=='dev' !> <!-- @exec hello('b') !> <!-- @endif -->c";
+    expected = "a Hello b!c";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev', hello: hello.bind(null, test, 1)}, 'html'), expected, 'Should process @if and exec nested @exec');
+
+    input = "a<!-- @if NODE_ENV=='dev' !> <!-- @include static.txt !> <!-- @endif -->c";
+    expected = "a !bazqux!c";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev', srcDir: 'test'}, 'html'), expected, 'Should process @if and exec nested @include');
+
+    input = "a<!-- @if NODE_ENV=='dev' !> <!-- @include-static static.txt !> <!-- @endif -->c";
+    expected = "a !bazqux!c";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev', srcDir: 'test'}, 'html'), expected, 'Should process @if and exec nested @include-static');
+
+    input = "a<!-- @if NODE_ENV=='dev' !> <!-- @exclude !> b <!-- @endexclude !> <!-- @endif -->c";
+    expected = "ac";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev'}, 'html'), expected, 'Should process @if and exec nested @exclude');
+
+    input = "a<!-- @if NODE_ENV=='dev' !> <!-- @extend extend.html !>c<!-- @endextend !> <!-- @endif -->c";
+    expected = "aacbc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev', srcDir: 'test'}, 'html'), expected, 'Should process @if and exec nested @extend');
+
+    input = "a<!-- @extend extend.html !> <!-- @if NODE_ENV=='dev' !>c<!-- @endif !> <!-- @endextend -->c";
+    expected = "aacbc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev', srcDir: 'test'}, 'html'), expected, 'Should process @extend and exec nested @if');
+
+    input = "a<!-- @extend extend.html !> <!-- @ifdef NODE_ENV !>c<!-- @endif !> <!-- @endextend -->c";
+    expected = "aacbc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev', srcDir: 'test'}, 'html'), expected, 'Should process @extend and exec nested @ifdef');
+
+    input = "a<!-- @extend extend.html !> <!-- @ifndef NODE_ENV !>c<!-- @endif !> <!-- @endextend -->c";
+    expected = "aabc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev', srcDir: 'test'}, 'html'), expected, 'Should process @extend and exec nested @ifndef');
+
+    input = "a<!-- @if NODE_ENV=='dev' !> <!-- @foreach $var in ARR !>$var<!-- @endfor !> <!-- @endif -->c";
+    expected = "abcc";
+    test.equal(pp.preprocess(input, { NODE_ENV: 'dev', ARR: "['b', 'c']"}, 'html'), expected, 'Should process @if and exec nested @extend');
+
+    test.done();
+  },
   'preprocess javascript (hidden by default syntax)': function(test) {
     test.expect(11);
 
