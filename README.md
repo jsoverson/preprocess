@@ -1,4 +1,4 @@
-# preprocess  [![Build Status](https://travis-ci.org/jsoverson/preprocess.png?branch=master)](https://travis-ci.org/jsoverson/preprocess)
+# preprocess  [![Build Status][ci-image]][ci-url] [![dependencies][deps-image]][deps-url] [![dev-dependencies][dev-deps-image]][dev-deps-url]
 
 Preprocess HTML, JavaScript, and other files with directives based off custom or ENV configuration
 
@@ -280,3 +280,10 @@ Copyright Jarrod Overson
 Written by Jarrod Overson
 
 Licensed under the Apache 2.0 license.
+
+[ci-image]: https://travis-ci.org/jsoverson/preprocess.png?branch=master
+[ci-url]: https://travis-ci.org/jsoverson/preprocess
+[deps-image]: https://david-dm.org/jsoverson/preprocess.png
+[deps-url]: https://david-dm.org/jsoverson/preprocess
+[dev-deps-image]: https://david-dm.org/jsoverson/preprocess/dev-status.png
+[dev-deps-url]: https://david-dm.org/jsoverson/preprocess#info=devDependencies

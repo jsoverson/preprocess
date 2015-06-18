@@ -34,7 +34,7 @@ module.exports = function(grunt) {
 
   // Default task.
   grunt.registerTask('test', ['jshint', 'nodeunit']);
-  grunt.registerTask('dev', ['watch']);
+  grunt.registerTask('dev', ['deps-ok', 'watch']);
   grunt.registerTask('default', ['test']);
 
 };
