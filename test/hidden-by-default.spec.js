@@ -1,20 +1,19 @@
 'use strict';
 
 var chai = require('chai'),
-  pp = require('../lib/preprocess');
+  spies = require("chai-spies"),
+  pp = require('../lib/preprocess'),
+  hello = require('./lib/hello');
 
 chai.should();
+chai.use(spies);
 
 describe('hidden by default comment blocks shall be preprocessed', function () {
-  var input;
+  var input, helloSpy;
 
-  function hello(expectedParamNumber) {
-    (arguments.length - 1).should.equal(expectedParamNumber);
-
-    var names = Array.prototype.slice.call(arguments, 1);
-
-    return 'Hello ' + names.join() + '!';
-  }
+  beforeEach(function(){
+    helloSpy = chai.spy(hello);
+  });
 
   describe('in html', function () {
     it('and process @if and exec nested @echo', function () {
@@ -24,7 +23,8 @@ describe('hidden by default comment blocks shall be preprocessed', function () {
 
     it('and process @if and exec nested @exec', function () {
       input = "a<!-- @if NODE_ENV=='dev' !> <!-- @exec hello('b') !> <!-- @endif -->c";
-      pp.preprocess(input, {NODE_ENV: 'dev', hello: hello.bind(null, 1)}, 'html').should.equal("a Hello b!c");
+      pp.preprocess(input, {NODE_ENV: 'dev', hello: helloSpy}, 'html').should.equal("a Hello b!c");
+      helloSpy.should.have.been.called.with('b');
     });
 
     it('and process @if and exec nested @include', function () {
@@ -76,7 +76,8 @@ describe('hidden by default comment blocks shall be preprocessed', function () {
 
     it('and process @if and exec nested @exec', function () {
       input = "a/* @if NODE_ENV=='dev' ** /* @exec hello('b') ** /* @endif */c";
-      pp.preprocess(input, {NODE_ENV: 'dev', hello: hello.bind(null, 1)}, 'js').should.equal("a Hello b!c");
+      pp.preprocess(input, {NODE_ENV: 'dev', hello: helloSpy}, 'js').should.equal("a Hello b!c");
+      helloSpy.should.have.been.called.with('b');
     });
 
     it('and process @if and exec nested @include', function () {

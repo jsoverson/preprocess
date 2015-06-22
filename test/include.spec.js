@@ -1,28 +1,28 @@
 'use strict';
 
 var chai = require('chai'),
-  pp = require('../lib/preprocess');
+  spies = require("chai-spies"),
+  pp = require('../lib/preprocess'),
+  hello = require('./lib/hello');
 
 chai.should();
+chai.use(spies);
 
 describe('@include directive shall be preprocessed', function () {
-  var input;
+  var input, helloSpy;
 
-  function hello(expectedParamNumber) {
-    (arguments.length - 1).should.equal(expectedParamNumber);
-
-    var names = Array.prototype.slice.call(arguments, 1);
-
-    return 'Hello ' + names.join() + '!';
-  }
+  beforeEach(function(){
+    helloSpy = chai.spy(hello);
+  });
 
   describe('in html', function () {
     it('and include files', function () {
       input = "a<!-- @include include.html -->c";
       pp.preprocess(input, {
         srcDir: 'test/fixtures/include',
-        hello: hello.bind(null, 1)
+        hello: helloSpy
       }).should.equal("a!foobar!Hello html!!bazqux!c");
+      helloSpy.should.have.been.called.with('html');
     });
 
     it('and include files and indent if ending with a newline', function () {
@@ -36,8 +36,9 @@ describe('@include directive shall be preprocessed', function () {
       input = "a\n /* @include include.block.js */c";
       pp.preprocess(input, {
         srcDir: 'test/fixtures/include',
-        hello: hello.bind(null, 1)
+        hello: helloSpy
       }, 'js').should.equal("a\n !foobar!Hello js!\n !bazqux!c");
+      helloSpy.should.have.been.called.with('js');
     });
 
     it('and include files and indent if ending with a newline (block)', function () {
@@ -49,8 +50,9 @@ describe('@include directive shall be preprocessed', function () {
       input = "a\n// @include include.js\nc";
       pp.preprocess(input, {
         srcDir: 'test/fixtures/include',
-        hello: hello.bind(null, 1)
+        hello: helloSpy
       }, 'js').should.equal("a\n!foobar!\nHello js!\n!bazqux!\nc");
+      helloSpy.should.have.been.called.with('js');
     });
 
     it('and include files and indent if ending with a newline (line)', function () {
@@ -64,8 +66,9 @@ describe('@include directive shall be preprocessed', function () {
       input = "a\n@include include.txt\nc";
       pp.preprocess(input, {
         srcDir: 'test/fixtures/include',
-        hello: hello.bind(null, 1)
+        hello: helloSpy
       }, 'simple').should.equal("a\n!foobar!\nHello simple!\n!bazqux!\nc");
+      helloSpy.should.have.been.called.with('simple');
     });
 
     it('and include files and indent if ending with a newline', function () {
@@ -79,16 +82,18 @@ describe('@include directive shall be preprocessed', function () {
       input = "a\n# @include include.coffee\nc";
       pp.preprocess(input, {
         srcDir: 'test/fixtures/include',
-        hello: hello.bind(null, 1)
+        hello: helloSpy
       }, 'coffee').should.equal("a\n!foobar!\nHello coffee!\n!bazqux!\nc");
+      helloSpy.should.have.been.called.with('coffee');
     });
 
     it('and include files (multiple hashes)', function () {
       input = "a\n## @include include.coffee\nc";
       pp.preprocess(input, {
         srcDir: 'test/fixtures/include',
-        hello: hello.bind(null, 1)
+        hello: helloSpy
       }, 'coffee').should.equal("a\n!foobar!\nHello coffee!\n!bazqux!\nc");
+      helloSpy.should.have.been.called.with('coffee');
     });
 
     it('and include files and indent if ending with a newline', function () {

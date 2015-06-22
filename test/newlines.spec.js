@@ -1,20 +1,15 @@
 'use strict';
 
 var chai = require('chai'),
-  pp = require('../lib/preprocess');
+  spies = require("chai-spies"),
+  pp = require('../lib/preprocess'),
+  hello = require('./lib/hello');
 
 chai.should();
+chai.use(spies);
 
 describe('newlines shall be handled in all common formats', function () {
   var input;
-
-  function hello(expectedParamNumber) {
-    (arguments.length - 1).should.equal(expectedParamNumber);
-
-    var names = Array.prototype.slice.call(arguments, 1);
-
-    return 'Hello ' + names.join() + '!';
-  }
 
   it('and handle \\n (Unix) style EOLs', function () {
     input = "a\n" +
@@ -70,12 +65,16 @@ describe('newlines shall be handled in all common formats', function () {
   });
 
   it('and extend files and adapt all EOLs from file to be included to EOLs in target file when using @extend', function () {
+    var helloSpy = chai.spy(hello);
+
     // extendadv.html has \r style EOLs
     input = "a\n<!-- @extend extendadv.html -->\nqa\n<!-- @endextend -->\n\nc";
+
     pp.preprocess(input, {
       srcDir: 'test/fixtures/extend',
       BLUE: "red",
-      hello: hello.bind(null, 1)
+      hello: helloSpy
     }).should.equal("a\na\n  b\n  red\n  Hello extend!\n  qa\nc\nc");
+    helloSpy.should.have.been.called.with('extend');
   });
 });
