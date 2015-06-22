@@ -32,12 +32,14 @@
     "xregexp": "^2.0.0"
   },
   "devDependencies": {
+    "chai": "^3.0.0",
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.11.0",
-    "grunt-contrib-nodeunit": "~0.4.0",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-deps-ok": "^0.8.0",
-    "load-grunt-tasks": "~3.2.0"
+    "grunt-mocha-test": "^0.12.7",
+    "load-grunt-tasks": "~3.2.0",
+    "mocha": "^2.2.5"
   },
   "keywords": [
     "directive",

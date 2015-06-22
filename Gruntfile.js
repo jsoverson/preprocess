@@ -4,18 +4,21 @@ module.exports = function(grunt) {
 
   require('load-grunt-tasks')(grunt);
 
-  // Project configuration.
   grunt.initConfig({
-    nodeunit: {
-      preprocess : {
-        src: ['test/preprocess_test.js']
+    mochaTest: {
+      preprocess: {
+        options: {
+          reporter: 'spec'
+        },
+        src: ['test/**/*.spec.js']
       }
     },
     jshint: {
       options: {
         jshintrc : '.jshintrc'
       },
-      lib : ['lib/**/*.js']
+      lib : ['lib/**/*.js'],
+      test : ['test/**/*.spec.js']
     },
     watch: {
       src: {
@@ -32,9 +35,7 @@ module.exports = function(grunt) {
     }
   });
 
-  // Default task.
-  grunt.registerTask('test', ['jshint', 'nodeunit']);
+  grunt.registerTask('test', ['jshint', 'mochaTest']);
   grunt.registerTask('dev', ['deps-ok', 'watch']);
   grunt.registerTask('default', ['test']);
-
 };
