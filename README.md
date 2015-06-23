@@ -286,11 +286,11 @@ Licensed under the Apache 2.0 license.
 
 [npm-image]: https://nodei.co/npm/preprocess.png?downloads=true
 [npm-url]: https://www.npmjs.com/package/preprocess
-[ci-image]: https://travis-ci.org/jsoverson/preprocess.png?branch=master
+[ci-image]: https://travis-ci.org/jsoverson/preprocess.svg?branch=master
 [ci-url]: https://travis-ci.org/jsoverson/preprocess
-[deps-image]: https://david-dm.org/jsoverson/preprocess.png
+[deps-image]: https://david-dm.org/jsoverson/preprocess.svg
 [deps-url]: https://david-dm.org/jsoverson/preprocess
-[dev-deps-image]: https://david-dm.org/jsoverson/preprocess/dev-status.png
+[dev-deps-image]: https://david-dm.org/jsoverson/preprocess/dev-status.svg
 [dev-deps-url]: https://david-dm.org/jsoverson/preprocess#info=devDependencies
 [coverage-image]: https://coveralls.io/repos/jsoverson/preprocess/badge.svg?branch=master
 [coverage-url]: https://coveralls.io/r/jsoverson/preprocess?branch=master
