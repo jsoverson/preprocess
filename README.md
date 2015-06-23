@@ -292,5 +292,5 @@ Licensed under the Apache 2.0 license.
 [deps-url]: https://david-dm.org/jsoverson/preprocess
 [dev-deps-image]: https://david-dm.org/jsoverson/preprocess/dev-status.png
 [dev-deps-url]: https://david-dm.org/jsoverson/preprocess#info=devDependencies
-[coverage-image]: https://coveralls.io/repos/jsoverson/preprocess/badge.svg
-[coverage-url]: https://coveralls.io/r/jsoverson/preprocess
+[coverage-image]: https://coveralls.io/repos/jsoverson/preprocess/badge.svg?branch=master
+[coverage-url]: https://coveralls.io/r/jsoverson/preprocess?branch=master
