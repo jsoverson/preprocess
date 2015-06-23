@@ -26,7 +26,8 @@
     "node": ">= 0.10.0"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "ci": "grunt ci"
   },
   "dependencies": {
     "xregexp": "^2.0.0"
@@ -35,12 +36,19 @@
     "chai": "^3.0.0",
     "chai-spies": "^0.6.0",
     "grunt": "~0.4.1",
+    "grunt-blanket": "0.0.8",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-copy": "^0.8.0",
     "grunt-contrib-jshint": "^0.11.0",
     "grunt-contrib-watch": "^0.6.1",
+    "grunt-coveralls": "^1.0.0",
     "grunt-deps-ok": "^0.8.0",
     "grunt-mocha-test": "^0.12.7",
     "load-grunt-tasks": "^3.2.0",
-    "mocha": "^2.2.5"
+    "mocha": "^2.2.5",
+    "mocha-lcov-reporter": "0.0.2",
+    "travis-cov": "^0.2.5"
   },
   "keywords": [
     "directive",

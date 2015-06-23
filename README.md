@@ -1,7 +1,7 @@
 # preprocess
 [![NPM][npm-image]][npm-url]
 
-[![Build Status][ci-image]][ci-url] [![dependencies][deps-image]][deps-url] [![dev-dependencies][dev-deps-image]][dev-deps-url]
+[![Build Status][ci-image]][ci-url] [![dependencies][deps-image]][deps-url] [![dev-dependencies][dev-deps-image]][dev-deps-url] [![Coverage Status][coverage-image]][coverage-url]
 
 Preprocess HTML, JavaScript, and other files with directives based off custom or ENV configuration
 
@@ -257,13 +257,13 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 changed functionality. Lint and test your code using jshint
 
 ## Release History
- - 2.4.0
+ - 3.0.0
    - All block directives (ones that have a start and an end token, like `@if`/`@endif`) are now processed recursively (via @Frizi, #61)
    - Added hidden by default configuration blocks for `js` (via @mallowigi, #40) and `html` (via @Frizi, #66)
    - fixed `@exec` in files included via `@include` and `@extend` (fixes #58)
    - changed `@extend` and `@exclude` html regex so that directives may appear more than once in one line (fixes #36)
    - fixed multiple issues with coffescript syntax (fixes #39)
-   - fixed multiple issues with newlines (fixes #8)
+   - fixed multiple issues with newlines (fixes #8, potentially breaking)
  - 2.3.1 Fixed @echo and @exec directives to allow `-` and `*` characters (fixes #21, #45, #51), fixed @exec with multiple
   params (fixes #54).
  - 2.3.0 Added support for @include-static
@@ -292,3 +292,5 @@ Licensed under the Apache 2.0 license.
 [deps-url]: https://david-dm.org/jsoverson/preprocess
 [dev-deps-image]: https://david-dm.org/jsoverson/preprocess/dev-status.png
 [dev-deps-url]: https://david-dm.org/jsoverson/preprocess#info=devDependencies
+[coverage-image]: https://coveralls.io/repos/jsoverson/preprocess/badge.svg
+[coverage-url]: https://coveralls.io/r/jsoverson/preprocess
