@@ -30,7 +30,7 @@
     "ci": "grunt ci"
   },
   "dependencies": {
-    "xregexp": "^2.0.0"
+    "xregexp": "2.0.0"
   },
   "devDependencies": {
     "chai": "^3.0.0",
@@ -48,6 +48,7 @@
     "load-grunt-tasks": "^3.2.0",
     "mocha": "^2.2.5",
     "mocha-lcov-reporter": "0.0.2",
+    "time-grunt": "^1.2.1",
     "travis-cov": "^0.2.5"
   },
   "keywords": [

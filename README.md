@@ -1,7 +1,7 @@
 # preprocess
 [![NPM][npm-image]][npm-url]
 
-[![Build Status][ci-image]][ci-url] [![dependencies][deps-image]][deps-url] [![dev-dependencies][dev-deps-image]][dev-deps-url] [![Coverage Status][coverage-image]][coverage-url]
+[![Build Status][ci-image]][ci-url] [![Coverage Status][coverage-image]][coverage-url] [![dependencies][deps-image]][deps-url] [![dev-dependencies][dev-deps-image]][dev-deps-url]
 
 Preprocess HTML, JavaScript, and other files with directives based off custom or ENV configuration
 
