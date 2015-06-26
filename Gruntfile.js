@@ -28,7 +28,7 @@ module.exports = function(grunt) {
         options: {
           reporter: 'spec'
         },
-        src: ['coverage/test/**/*.spec.js']
+        src: ['test/**/*.spec.js']
       },
       'html-cov': {
         options: {
@@ -78,14 +78,16 @@ module.exports = function(grunt) {
           'test/**/*',
           '!test/tmp/**/*'
         ],
-        tasks: ["test"]
+        tasks: ['test', 'coverage']
       }
     }
   });
 
   grunt.registerTask('prepare-cov', ['clean', 'blanket', 'copy']);
-  grunt.registerTask('test', ['jshint', 'prepare-cov', 'mochaTest']);
+  grunt.registerTask('coverage',
+    ['prepare-cov', 'mochaTest:html-cov', 'mochaTest:mocha-lcov-reporter', 'mochaTest:travis-cov']);
+  grunt.registerTask('test', ['jshint', 'mochaTest:preprocess']);
   grunt.registerTask('dev', ['deps-ok', 'watch']);
-  grunt.registerTask('default', ['test']);
+  grunt.registerTask('default', ['test', 'coverage']);
   grunt.registerTask('ci', ['default', 'coveralls']);
 };

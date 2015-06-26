@@ -260,14 +260,14 @@ changed functionality. Lint and test your code using jshint
  - 3.0.0
    - All block directives (ones that have a start and an end token, like `@if`/`@endif`) are now processed recursively (via @Frizi, #61)
    - Added hidden by default configuration blocks for `js` (via @mallowigi, #40) and `html` (via @Frizi, #66)
-   - fixed `@exec` in files included via `@include` and `@extend` (fixes #58)
-   - changed `@extend` and `@exclude` html regex so that directives may appear more than once in one line (fixes #36)
-   - fixed multiple issues with coffescript syntax (fixes #39)
-   - fixed multiple issues with newlines (fixes #8, potentially breaking)
- - 2.3.1 Fixed @echo and @exec directives to allow `-` and `*` characters (fixes #21, #45, #51), fixed @exec with multiple
-  params (fixes #54).
- - 2.3.0 Added support for @include-static
- - 2.2.0 Added support for @foreach and @extend
+   - fixed `@exec` in files included via `@include` and `@extend` (via @BendingBender, #58)
+   - changed `@extend` and `@exclude` html regex so that directives may appear more than once in one line (via @BendingBender, #36)
+   - fixed multiple issues with coffescript syntax (via @BendingBender, #39)
+   - fixed multiple issues with newlines (via @BendingBender, #8, potentially breaking)
+ - 2.3.1 Fixed @echo and @exec directives to allow `-` and `*` characters, fixed @exec with multiple params
+  (via @BendingBender, #21, #45, #51, #54).
+ - 2.3.0 Added support for @include-static (via @BendingBender)
+ - 2.2.0 Added support for @foreach and @extend (via @orionstein)
  - 2.1.1 Added support for .styl files via js regex (via @nsonnad)
  - 2.1.0 Added automatic support for numerous formats, merged @exec, hidden by default html tags, added simple directives
  - 2.0.0 Added ability to echo strings, added conditional comments, removed lodash, merged 17, 13, 15, 16
