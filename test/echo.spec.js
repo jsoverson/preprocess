@@ -94,4 +94,28 @@ describe('@extend directive shall be preprocessed', function () {
       pp.preprocess(input, {FOO: 1, BAR: 2}, 'js').should.equal("a-*b*-c");
     });
   });
+
+  describe('and shall allow omitting of whitespaces', function () {
+    it('in html before and after the directive', function () {
+      input = "a<!--@echo FINGERPRINT-->c";
+      pp.preprocess(input, {FINGERPRINT: '0xDEADBEEF'}).should.equal("a0xDEADBEEFc");
+    });
+
+    describe('in javascript', function () {
+      it('before and after the directive (block)', function () {
+        input = "a/*@echo FINGERPRINT*/c";
+        pp.preprocess(input, {FINGERPRINT: '0xDEADBEEF'}, 'js').should.equal("a0xDEADBEEFc");
+      });
+
+      it('before the directive (line)', function () {
+        input = "a\n//@echo FINGERPRINT\nc";
+        pp.preprocess(input, {FINGERPRINT: '0xDEADBEEF'}, 'js').should.equal("a\n0xDEADBEEF\nc");
+      });
+    });
+
+    it('in coffeescript before the directive', function () {
+      input = "a\n#@echo FINGERPRINT\nc";
+      pp.preprocess(input, {FINGERPRINT: '0xDEADBEEF'}, 'coffee').should.equal("a\n0xDEADBEEF\nc");
+    });
+  });
 });

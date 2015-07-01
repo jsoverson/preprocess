@@ -329,4 +329,34 @@ describe('@if directive shall be preprocessed', function () {
       pp.preprocess(input, {NODE_ENV: 'production'}).should.equal("abcdef");
     });
   });
+
+  describe('and shall allow omitting of whitespaces', function () {
+    var input;
+
+    it('in html before and after the directive', function () {
+      var input = "<!--@if NODE_ENV=='production'-->b<!--@endif-->";
+      pp.preprocess(input, {NODE_ENV: 'production'}).should.equal("b");
+    });
+
+    describe('in javascript', function () {
+      it('before and after the directive (block)', function () {
+        input = "/*@if NODE_ENV=='production'*/b/*@endif*/";
+        pp.preprocess(input, {NODE_ENV: 'production'}, 'js').should.equal("b");
+      });
+
+      it('before the directive (line)', function () {
+        input = "//@if NODE_ENV=='production'\n" +
+          "b\n" +
+          "//@endif";
+        pp.preprocess(input, {NODE_ENV: 'production'}, 'js').should.equal("b\n");
+      });
+    });
+
+    it('in coffeescript before the directive', function () {
+      var input = "#@if NODE_ENV=='production'\n" +
+        "b\n" +
+        "#@endif";
+      pp.preprocess(input, {NODE_ENV: 'production'}, 'coffee').should.equal("b\n");
+    });
+  });
 });

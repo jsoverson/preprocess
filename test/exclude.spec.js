@@ -53,4 +53,28 @@ describe('@exclude directive shall be preprocessed', function () {
       pp.preprocess(input, {}, 'coffee').should.equal("a\nc");
     });
   });
+
+  describe('and shall allow omitting of whitespaces', function () {
+    it('in html before and after the directive', function () {
+      input = "a<!--@exclude-->b<!--@endexclude-->c";
+      pp.preprocess(input, {}).should.equal("ac");
+    });
+
+    describe('in javascript', function () {
+      it('before and after the directive (block)', function () {
+        input = "a/*@exclude*/b/*@endexclude*/c";
+        pp.preprocess(input, {}, 'js').should.equal("ac");
+      });
+
+      it('before the directive (line)', function () {
+        input = "a\n//@exclude\nb\n//@endexclude\nc";
+        pp.preprocess(input, {}, 'js').should.equal("a\nc");
+      });
+    });
+
+    it('in coffeescript before the directive', function () {
+      input = "a\n#@exclude\nb\n#@endexclude\nc";
+      pp.preprocess(input, {}, 'coffee').should.equal("a\nc");
+    });
+  });
 });

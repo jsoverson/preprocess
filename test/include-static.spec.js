@@ -76,4 +76,32 @@ describe('@include-static directive shall be preprocessed', function () {
       pp.preprocess(input, {srcDir: 'test/fixtures/include'}, 'coffee').should.equal("a\n !foobar!\n \nc");
     });
   });
+
+  describe('and shall allow omitting of whitespaces', function () {
+    it('in html before and after the directive', function () {
+      input = "a<!--@include-static include.html-->c";
+      pp.preprocess(input, {srcDir: 'test/fixtures/include'})
+        .should.equal("a!foobar!<!-- @exec hello('html') --><!-- @include static.txt -->c");
+    });
+
+    describe('in javascript', function () {
+      it('before and after the directive (block)', function () {
+        input = "a\n /*@include-static include.block.js*/c";
+        pp.preprocess(input, {srcDir: 'test/fixtures/include'}, 'js')
+          .should.equal("a\n !foobar!/* @exec hello('js') */\n /* @include static.txt */c");
+      });
+
+      it('before the directive (line)', function () {
+        input = "a\n//@include-static include.js\nc";
+        pp.preprocess(input, {srcDir: 'test/fixtures/include'}, 'js')
+          .should.equal("a\n!foobar!\n// @exec hello('js')\n// @include static.txt\nc");
+      });
+    });
+
+    it('in coffeescript before the directive', function () {
+      input = "a\n#@include-static include.coffee\nc";
+      pp.preprocess(input, {srcDir: 'test/fixtures/include'}, 'coffee')
+        .should.equal("a\n!foobar!\n# @exec hello('coffee')\n# @include static.txt\nc");
+    });
+  });
 });

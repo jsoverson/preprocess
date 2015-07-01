@@ -68,4 +68,28 @@ describe('@extend directive shall be preprocessed', function () {
       pp.preprocess(input, {srcDir: 'test/fixtures/extend'}, 'coffee').should.equal("a\nqr\nb");
     });
   });
+
+  describe('and shall allow omitting of whitespaces', function () {
+    it('in html before and after the directive', function () {
+      input = "<!--@extend extend.html-->qr<!--@endextend-->";
+      pp.preprocess(input, {srcDir: 'test/fixtures/extend'}).should.equal("aqrb");
+    });
+
+    describe('in javascript', function () {
+      it('before and after the directive (block)', function () {
+        input = "/*@extend extend.js*/qr/*@endextend*/";
+        pp.preprocess(input, {srcDir: 'test/fixtures/extend'}, 'js').should.equal("aqrb");
+      });
+
+      it('before the directive (line)', function () {
+        input = "//@extend extend.js\nqr\n//@endextend";
+        pp.preprocess(input, {srcDir: 'test/fixtures/extend'}, 'js').should.equal("aqrb");
+      });
+    });
+
+    it('in coffeescript before the directive', function () {
+      input = "#@extend extend.coffee\nqr\n#@endextend";
+      pp.preprocess(input, {srcDir: 'test/fixtures/extend'}, 'coffee').should.equal("a\nqr\nb");
+    });
+  });
 });

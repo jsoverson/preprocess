@@ -188,5 +188,29 @@ describe('@foreach directive shall be preprocessed', function () {
       });
     });
   });
+
+  describe('and shall allow omitting of whitespaces', function () {
+    it('in html before and after the directive', function () {
+      input = "<!--@foreach $ITEM in LIST-->$ITEM<!--@endfor-->";
+      pp.preprocess(input, {LIST: ['a'].toString()}).should.equal("a");
+    });
+
+    describe('in javascript', function () {
+      it('before and after the directive (block)', function () {
+        input = "/*@foreach $ITEM in LIST*/$ITEM/*@endfor*/";
+        pp.preprocess(input, {LIST: ['a'].toString()}, 'js').should.equal("a");
+      });
+
+      it('before the directive (line)', function () {
+        input = "//@foreach $ITEM in LIST\n$ITEM\n//@endfor";
+        pp.preprocess(input, {LIST: ['a'].toString()}, 'js').should.equal("a\n");
+      });
+    });
+
+    it('in coffeescript before the directive', function () {
+      input = "#@foreach $ITEM in LIST\n$ITEM\n#@endfor";
+      pp.preprocess(input, {LIST: ['a'].toString()}, 'coffee').should.equal("a\n");
+    });
+  });
 });
 

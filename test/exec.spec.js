@@ -133,4 +133,32 @@ describe('@exec directive shall be preprocessed', function () {
       helloSpy.should.have.been.called.with('Chuck Norris', 'Michael Jackson');
     });
   });
+
+  describe('and shall allow omitting of whitespaces', function () {
+    it('in html before and after the directive', function () {
+      input = "a<!-- @exec hello('Chuck Norris') -->c";
+      pp.preprocess(input, {hello: helloSpy}).should.equal("aHello Chuck Norris!c");
+      helloSpy.should.have.been.called.with('Chuck Norris');
+    });
+
+    describe('in javascript', function () {
+      it('before and after the directive (block)', function () {
+        input = "a/*@exec hello('Chuck Norris')*/c";
+        pp.preprocess(input, {hello: helloSpy}, 'js').should.equal("aHello Chuck Norris!c");
+        helloSpy.should.have.been.called.with('Chuck Norris');
+      });
+
+      it('before the directive (line)', function () {
+        input = "a\n//@exec hello('Chuck Norris')\nc";
+        pp.preprocess(input, {hello: helloSpy}, 'js').should.equal("a\nHello Chuck Norris!\nc");
+        helloSpy.should.have.been.called.with('Chuck Norris');
+      });
+    });
+
+    it('in coffeescript before the directive', function () {
+      input = "a\n#@exec hello('Chuck Norris')\nc";
+      pp.preprocess(input, {hello: helloSpy}, 'coffee').should.equal("a\nHello Chuck Norris!\nc");
+      helloSpy.should.have.been.called.with('Chuck Norris');
+    });
+  });
 });
