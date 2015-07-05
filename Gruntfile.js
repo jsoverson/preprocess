@@ -72,7 +72,8 @@ module.exports = function(grunt) {
         jshintrc : '.jshintrc'
       },
       lib : ['lib/**/*.js'],
-      test : ['test/**/*.spec.js']
+      test : ['test/**/*.spec.js'],
+      benchmark: ['benchmark/**/*.js']
     },
     watch: {
       src: {
