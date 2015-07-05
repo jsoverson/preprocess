@@ -1,5 +1,6 @@
 /node_modules/
 /test/tmp
+/benchmark/result.csv
 /coverage
 .idea
 *.iml

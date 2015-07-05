@@ -8,6 +8,12 @@ module.exports = function(grunt) {
     clean: {
       coverage: {
         src: ['coverage']
+      },
+      test: {
+        src: ['test/tmp']
+      },
+      benchmark: {
+        src: ['benchmark/result.csv']
       }
     },
     copy: {
@@ -80,10 +86,20 @@ module.exports = function(grunt) {
         ],
         tasks: ['test', 'coverage']
       }
+    },
+    benchmark: {
+      options: {
+        displayResults: true
+      },
+
+      'mochaTest-preprocess': {
+        src: ['benchmark/gruntMochaTestPreprocess.js'],
+        dest: 'benchmark/result.csv'
+      }
     }
   });
 
-  grunt.registerTask('prepare-cov', ['clean', 'blanket', 'copy']);
+  grunt.registerTask('prepare-cov', ['clean:coverage', 'blanket', 'copy']);
   grunt.registerTask('coverage',
     ['prepare-cov', 'mochaTest:html-cov', 'mochaTest:mocha-lcov-reporter', 'mochaTest:travis-cov']);
   grunt.registerTask('test', ['jshint', 'mochaTest:preprocess']);

@@ -264,6 +264,7 @@ changed functionality. Lint and test your code using jshint
    - changed `@extend` and `@exclude` html regex so that directives may appear more than once in one line (via @BendingBender, #36)
    - fixed multiple issues with coffescript syntax (via @BendingBender, #39)
    - fixed multiple issues with newlines (via @BendingBender, #8, potentially breaking)
+   - fixed `@if` and `@foreach` to not require trailing whitespace (via @BendingBender, #74)
  - 2.3.1 Fixed @echo and @exec directives to allow `-` and `*` characters, fixed @exec with multiple params
   (via @BendingBender, #21, #45, #51, #54).
  - 2.3.0 Added support for @include-static (via @BendingBender)
