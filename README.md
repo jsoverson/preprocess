@@ -257,7 +257,7 @@ The directory where to look for files included via `@include` variants and `@ext
 
 ##### options.srcEol
 Type: `String`
-Defaut: EOL of source string or `os.EOL` if source string contains multiple different or no EOLs.
+Default: EOL of source string or `os.EOL` if source string contains multiple different or no EOLs.
 
 The end of line (EOL) character to use for the preprocessed result. May be one of:
  - `\r\n` - Windows
@@ -289,7 +289,7 @@ Type: `String` (mandatory)
 The path to the destination file where the preprocessed result shall be saved.
 
 #### context
-See `context` attribute description of `preprocess()` function.
+See `context` [attribute description](#context) of `preprocess()` function.
 
 #### callback
 Type: `function(err)`
@@ -297,7 +297,7 @@ Type: `function(err)`
 The callback function that is called upon error or completion. Receives an error if something goes wrong as first parameter.
 
 #### options
-See `options` attribute description of `preprocess()` function. Differs only in that the default `srcDir` value is set
+See `options` [attribute description](#options) of `preprocess()` function. Differs only in that the default `srcDir` value is set
 to the path of the provided source file instead of `process.cwd()` and the default `type` is derived from source file extension.
 
 
@@ -316,10 +316,10 @@ Type: `String` (mandatory)
 The path to the destination file where the preprocessed result shall be saved.
 
 #### context
-See `context` attribute description of `preprocess()` function.
+See `context` [attribute description](#context) of `preprocess()` function.
 
 #### options
-See `options` attribute description of `preprocess()` function. Differs only in that the default `srcDir` value is set
+See `options` [attribute description](#options) of `preprocess()` function. Differs only in that the default `srcDir` value is set
 to the path of the provided source file instead of `process.cwd()` and the default `type` is derived from source file extension.
 
 ## Usage Examples
