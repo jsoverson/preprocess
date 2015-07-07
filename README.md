@@ -1,7 +1,7 @@
 # preprocess
 [![NPM][npm-image]][npm-url]
 
-[![Build Status][ci-image]][ci-url] [![Coverage Status][coverage-image]][coverage-url] [![dependencies][deps-image]][deps-url] [![dev-dependencies][dev-deps-image]][dev-deps-url]
+[![Linux Build Status][linux-ci-image]][linux-ci-url] [![Windows Build Status][windows-ci-image]][windows-ci-url] [![Coverage Status][coverage-image]][coverage-url] [![dependencies][deps-image]][deps-url] [![dev-dependencies][dev-deps-image]][dev-deps-url]
 
 Preprocess HTML, JavaScript, and other files with directives based off custom or ENV configuration
 
@@ -392,8 +392,10 @@ Licensed under the Apache 2.0 license.
 
 [npm-image]: https://nodei.co/npm/preprocess.png?downloads=true
 [npm-url]: https://www.npmjs.com/package/preprocess
-[ci-image]: https://img.shields.io/travis/jsoverson/preprocess/master.svg?style=flat-square
-[ci-url]: https://travis-ci.org/jsoverson/preprocess
+[linux-ci-image]: https://img.shields.io/travis/jsoverson/preprocess/master.svg?style=flat-square&label=Linux%20build
+[linux-ci-url]: https://travis-ci.org/jsoverson/preprocess
+[windows-ci-image]: https://img.shields.io/appveyor/ci/jsoverson/preprocess/master.svg?style=flat-square&label=Windows%20build
+[windows-ci-url]: https://travis-ci.org/jsoverson/preprocess
 [deps-image]: https://img.shields.io/david/jsoverson/preprocess.svg?style=flat-square
 [deps-url]: https://david-dm.org/jsoverson/preprocess
 [dev-deps-image]: https://img.shields.io/david/dev/jsoverson/preprocess.svg?style=flat-square
