@@ -301,7 +301,7 @@ See `options` attribute description of `preprocess()` function. Differs only in 
 to the path of the provided source file instead of `process.cwd()` and the default `type` is derived from source file extension.
 
 
-### preprocessFileSync(srcFile, destFile[, context[, callback[, options]]])
+### preprocessFileSync(srcFile, destFile[, context[, options]])
 
 Preprocesses a `sourceFile` and saves the result to `destFile`. Simple wrapper around `fs.readFileSync()` and `fs.writeFileSync()`.
 
@@ -317,11 +317,6 @@ The path to the destination file where the preprocessed result shall be saved.
 
 #### context
 See `context` attribute description of `preprocess()` function.
-
-#### callback
-Type: `function(err)`
-
-The callback function that is called upon error or completion. Receives an error if something goes wrong as first parameter.
 
 #### options
 See `options` attribute description of `preprocess()` function. Differs only in that the default `srcDir` value is set
@@ -357,6 +352,7 @@ changed functionality. Lint and test your code using jshint
 
 ## Release History
  - 3.0.0
+   
    Breaking changes:
    - If a file requested by `@include` or `@extend` can not be found, `preprocess` will now throw by default
      with a possibility to opt in to the legacy behavior via the `fileNotFoundSilentFail` option (via @BendingBender, #35).
@@ -375,8 +371,7 @@ changed functionality. Lint and test your code using jshint
    - fixed multiple issues with coffescript syntax (via @BendingBender, #39)
    - fixed `@if` and `@foreach` to not require trailing whitespace (via @BendingBender, #74)
    
- - 2.3.1 Fixed @echo and @exec directives to allow `-` and `*` characters, fixed @exec with multiple params
-  (via @BendingBender, #21, #45, #51, #54).
+ - 2.3.1 Fixed @echo and @exec directives to allow `-` and `*` characters, fixed @exec with multiple params (via @BendingBender, #21, #45, #51, #54).
  - 2.3.0 Added support for @include-static (via @BendingBender)
  - 2.2.0 Added support for @foreach and @extend (via @orionstein)
  - 2.1.1 Added support for .styl files via js regex (via @nsonnad)
