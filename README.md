@@ -394,8 +394,8 @@ Licensed under the Apache 2.0 license.
 [npm-url]: https://www.npmjs.com/package/preprocess
 [linux-ci-image]: https://img.shields.io/travis/jsoverson/preprocess/master.svg?style=flat-square&label=Linux%20build
 [linux-ci-url]: https://travis-ci.org/jsoverson/preprocess
-[windows-ci-image]: https://img.shields.io/appveyor/ci/jsoverson/preprocess/master.svg?style=flat-square&label=Windows%20build
-[windows-ci-url]: https://travis-ci.org/jsoverson/preprocess
+[windows-ci-image]: https://img.shields.io/appveyor/ci/BendingBender/preprocess/master.svg?style=flat-square&label=Windows%20build
+[windows-ci-url]: https://ci.appveyor.com/project/BendingBender/preprocess
 [deps-image]: https://img.shields.io/david/jsoverson/preprocess.svg?style=flat-square
 [deps-url]: https://david-dm.org/jsoverson/preprocess
 [dev-deps-image]: https://img.shields.io/david/dev/jsoverson/preprocess.svg?style=flat-square
