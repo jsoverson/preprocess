@@ -10,7 +10,7 @@ describe('shall support multiple call signatures', function () {
 
   describe('and support legacy mode', function () {
     it('with only the source param in which case context shall be extracted from process.env', function () {
-      process.env.TEST = '';
+      process.env.TEST = 'a';
       input = "a<!-- @ifdef TEST -->b<!-- @endif -->c";
       pp.preprocess(input).should.equal("abc");
     });
