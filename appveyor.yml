@@ -22,3 +22,6 @@ test_script:
   - npm --version
   # run tests
   - npm run-script ci
+
+# Don't actually build.
+build: off
