@@ -5,6 +5,14 @@
 
 Preprocess HTML, JavaScript, and other files with directives based off custom or ENV configuration
 
+## Configuration
+
+Install via npm:
+
+```bash
+$ npm install --save preprocess
+```
+
 ## What does it look like?
 
 ```html
@@ -37,7 +45,7 @@ someDebuggingCall()
 
 ## Directive syntax
 
-### Basic syntax
+### Basic example
 
 The most basic usage is for files that only have two states, non-processed and processed.
 In this case, your `@exclude` directives are removed after preprocessing
@@ -57,7 +65,7 @@ After build
 </body>
 ```
 
-### Advanced directives
+### All directives
 
  - `@if VAR='value'` / `@endif`
    This will include the enclosed block if your test passes
@@ -68,14 +76,11 @@ After build
  - `@include`
    This will include the source from an external file. If the included source ends with a newline then the
    following line will be space indented to the level the @include was found.
-   *Requires the `srcDir` context attribute to point to the source dir of the files to be included, i.e. `{srcDir: '.'}`.*
  - `@include-static`
    Works the same way as `@include` but doesn't process the included file recursively. Is useful if a large
    file has to be included and the recursive processing is not necessary or would otherwise take too long.
-   *Requires the `srcDir` context attribute to point to the source dir of the files to be included, i.e. `{srcDir: '.'}`.*
  - `@extend file.html` / `@endextend`
    This will use the source from the external file indicated with the `@extend` tag to wrap the enclosed block.
-   *Requires the `srcDir` context attribute to point to the source dir of the file to be extended, i.e. `{srcDir: '.'}`.*
  - `@extendable`
    This tag is used to indicate the location in a file referenced using `@extend` where the block enclosed by `@extend` will be populated.
  - `@exclude` / `@endexclude`
@@ -160,9 +165,7 @@ normalFunction();
 superExpensiveDebugFunction()
 //@endexclude
 
-'/* @echo USERNAME */'
-
-anotherFunction();
+anotherFunction('/* @echo USERNAME */');
 ```
 
 Built with a NODE_ENV of production :
@@ -170,9 +173,7 @@ Built with a NODE_ENV of production :
 ```js
 normalFunction();
 
-'jsoverson'
-
-anotherFunction();
+anotherFunction('jsoverson');
 ```
 
 Like HTML, you can have conditional blocks that are hidden by default by ending the directive with a `**` instead of `*/`
@@ -214,22 +215,121 @@ body {
 #!/bin/bash
 
 # @include util.sh
-
 ```
 
-## Configuration and Usage
+## API
 
-Install via npm
+### preprocess(source[, context[, options]]) -> preprocessedSource
 
-```bash
-$ npm install --save preprocess
-```
+Preprocesses a source provided as a string and returns the preprocessed source.
 
-Use the exposed `preprocess` method or the convenience file functions. The context, by default, is the
-current ENV config the process (`process.env`)
+#### source
+Type: `String` (mandatory)
+
+The source to preprocess.
+
+#### context
+Type: `Object`
+Default: `process.env`
+
+The context that contains the variables that are used in the source. For `@extend` variants and `@include` the additional
+context property `src` is available inside of files to be included that contains the current file name. This property is also
+available in the context of the source file if one of the `preprocessFile*()` API variants are used.
+
+#### options
+Type: `Object`
+
+The options object allows to pass additional options to `preprocess`. Available options are:
+
+##### options.fileNotFoundSilentFail
+Type: `Boolean`
+Default: `false`
+
+When using `@include` variants and `@extend`, `preprocess` will by default throw an exception in case an included
+file can't be found. Set this option to `true` to instruct `preprocess` to fail silently and instead of throwing
+to write a message inside of the preprocessed file that an included file could not be found.
+
+##### options.srcDir
+Type: `String`
+Default: `process.cwd()`
+
+The directory where to look for files included via `@include` variants and `@extend`.
+
+##### options.srcEol
+Type: `String`
+Defaut: EOL of source string or `os.EOL` if source string contains multiple different or no EOLs.
+
+The end of line (EOL) character to use for the preprocessed result. May be one of:
+ - `\r\n` - Windows
+ - `\n` - Linux/OSX/Unix
+ - `\r` - legacy Mac
+
+##### options.type
+Type: `String`
+Default: `html`
+
+The syntax type of source string to preprocess. There are 3 main syntax variants:
+ - `html`, aliases: `xml`
+ - `js`, aliases: `javascript`, `c`, `cc`, `cpp`, `cs`, `csharp`, `java`, `less`, `sass`, `scss`, `css`, `php`,
+   `ts`, `peg`, `pegjs`, `jade`, `styl`
+ - `coffee`, aliases: `bash`, `shell`, `sh`
+
+### preprocessFile(srcFile, destFile[, context[, callback[, options]]])
+
+Preprocesses a `sourceFile` and saves the result to `destFile`. Simple wrapper around `fs.readFile()` and `fs.writeFile()`.
+
+#### srcFile
+Type: `String` (mandatory)
+
+The path to the source file to preprocess.
+
+#### destFile
+Type: `String` (mandatory)
+
+The path to the destination file where the preprocessed result shall be saved.
+
+#### context
+See `context` attribute description of `preprocess()` function.
+
+#### callback
+Type: `function(err)`
+
+The callback function that is called upon error or completion. Receives an error if something goes wrong as first parameter.
+
+#### options
+See `options` attribute description of `preprocess()` function. Differs only in that the default `srcDir` value is set
+to the path of the provided source file instead of `process.cwd()` and the default `type` is derived from source file extension.
+
+
+### preprocessFileSync(srcFile, destFile[, context[, callback[, options]]])
+
+Preprocesses a `sourceFile` and saves the result to `destFile`. Simple wrapper around `fs.readFileSync()` and `fs.writeFileSync()`.
+
+#### srcFile
+Type: `String` (mandatory)
+
+The path to the source file to preprocess.
+
+#### destFile
+Type: `String` (mandatory)
+
+The path to the destination file where the preprocessed result shall be saved.
+
+#### context
+See `context` attribute description of `preprocess()` function.
+
+#### callback
+Type: `function(err)`
+
+The callback function that is called upon error or completion. Receives an error if something goes wrong as first parameter.
+
+#### options
+See `options` attribute description of `preprocess()` function. Differs only in that the default `srcDir` value is set
+to the path of the provided source file instead of `process.cwd()` and the default `type` is derived from source file extension.
+
+## Usage Examples
 
 ```js
-
 var pp = require('preprocess');
 
 var text = 'Hi, I am <!-- @echo USERNAME -->';
@@ -241,15 +341,14 @@ pp.preprocess(text, {USERNAME : "Bob"});
 // -> Hi, I am Bob
 
 // specify the format to use for the directives as the third parameter
-pp.preprocess(text, {USERNAME : "Bob"}, 'html');
+pp.preprocess(text, {USERNAME : "Bob"}, {type: 'html'});
 // -> Hi, I am Bob
 
-// Simple wrapper around fs.readFile and fs.writeFile
-pp.preprocessFile(src, dest, context, callback);
+// Preprocess files asynchronously
+pp.preprocessFile(src, dest, context, callback, options);
 
-// Simple wrapper around fs.readFileSync and fs.writeFileSync
-pp.preprocessFileSync(src, dest, context);
-
+// Preprocess files synchronously
+pp.preprocessFileSync(src, dest, context, options);
 ```
 
 ## Contributing
@@ -258,13 +357,24 @@ changed functionality. Lint and test your code using jshint
 
 ## Release History
  - 3.0.0
+   Breaking changes:
+   - If a file requested by `@include` or `@extend` can not be found, `preprocess` will now throw by default
+     with a possibility to opt in to the legacy behavior via the `fileNotFoundSilentFail` option (via @BendingBender, #35).
+   - Fixed multiple issues with newlines (via @BendingBender, #8), this may result in output that differs from earlier
+     versions.
+   - The `srcDir` option was moved to the options object and now defaults to `process.cwd` instead of throwing by
+     default (via @BendingBender, #68)
+   
+   New functionality:
    - All block directives (ones that have a start and an end token, like `@if`/`@endif`) are now processed recursively (via @Frizi, #61)
    - Added hidden by default configuration blocks for `js` (via @mallowigi, #40) and `html` (via @Frizi, #66)
+   
+   Fixes:
    - fixed `@exec` in files included via `@include` and `@extend` (via @BendingBender, #58)
    - changed `@extend` and `@exclude` html regex so that directives may appear more than once in one line (via @BendingBender, #36)
    - fixed multiple issues with coffescript syntax (via @BendingBender, #39)
-   - fixed multiple issues with newlines (via @BendingBender, #8, potentially breaking)
    - fixed `@if` and `@foreach` to not require trailing whitespace (via @BendingBender, #74)
+   
  - 2.3.1 Fixed @echo and @exec directives to allow `-` and `*` characters, fixed @exec with multiple params
   (via @BendingBender, #21, #45, #51, #54).
  - 2.3.0 Added support for @include-static (via @BendingBender)
