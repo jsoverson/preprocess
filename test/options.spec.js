@@ -51,11 +51,11 @@ describe('shall support multiple call signatures', function () {
       });
 
       it('that should fall back to old behavior if it is set to true', function () {
-        input = "a\n<!--@include static.txt-->c";
-        pp.preprocess(input, {}, {fileNotFoundSilentFail: true}).should.match(/^a[^]*static.txt not found!c$/);
+        input = "a<!--@include static.txt-->c";
+        pp.preprocess(input, {}, {fileNotFoundSilentFail: true}).should.match(/^a.*static.txt not found!c$/);
 
         input = "a<!--@extend static.txt-->b<!--@endextend-->c";
-        pp.preprocess(input, {}, {fileNotFoundSilentFail: true}).should.match(/^a[^]*static.txt not found!c$/);
+        pp.preprocess(input, {}, {fileNotFoundSilentFail: true}).should.match(/^a.*static.txt not found!c$/);
       });
     });
 
