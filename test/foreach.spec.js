@@ -50,9 +50,14 @@ describe('@foreach directive shall be preprocessed', function () {
       });
     });
 
-    it('and support nested @foreach', function () {
+    it('and support nested @foreach in javascript', function () {
       input = "/* @foreach $ITEMA in LIST *//* @foreach $ITEMB in LIST */$ITEMA$ITEMB/* @endfor *//* @endfor */";
       pp.preprocess(input, {LIST: ['a', 'b'].toString()}, 'js').should.equal("aaabbabb");
+    });
+
+    it('and support nested @foreach in coffeescript', function () {
+      input = "## @foreach $ITEMA in LIST \n## @foreach $ITEMB in LIST \n$ITEMA$ITEMB\n## @endfor \n## @endfor";
+      pp.preprocess(input, {LIST: ['a', 'b'].toString()}, 'coffee').should.equal("aa\nab\nba\nbb\n");
     });
   });
 

@@ -5,7 +5,7 @@ var chai = require('chai'),
 
 chai.should();
 
-describe('@extend directive shall be preprocessed', function () {
+describe('@echo directive shall be preprocessed', function () {
   var input;
 
   describe('in html', function () {
