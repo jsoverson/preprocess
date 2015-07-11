@@ -351,6 +351,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 changed functionality. Lint and test your code using jshint
 
 ## Release History
+ - 3.0.1 Fixes for backward compatibility and regex cleanups (thanks to @anseki for suggestions, #77)
  - 3.0.0
    
    Breaking changes:
