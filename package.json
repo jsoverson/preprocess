@@ -1,7 +1,7 @@
 {
   "name": "preprocess",
   "description": "Preprocess directives in HTML, JavaScript, etc directives based off variable context",
-  "version": "3.0.0",
+  "version": "3.0.2",
   "homepage": "https://github.com/jsoverson/preprocess",
   "author": {
     "name": "Jarrod Overson",
