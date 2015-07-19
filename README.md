@@ -270,7 +270,7 @@ Default: `html`
 
 The syntax type of source string to preprocess. There are 3 main syntax variants:
  - `html`, aliases: `xml`
- - `js`, aliases: `javascript`, `c`, `cc`, `cpp`, `cs`, `csharp`, `java`, `less`, `sass`, `scss`, `css`, `php`,
+ - `js`, aliases: `javascript`, `jsx`, `c`, `cc`, `cpp`, `cs`, `csharp`, `java`, `less`, `sass`, `scss`, `css`, `php`,
    `ts`, `peg`, `pegjs`, `jade`, `styl`
  - `coffee`, aliases: `bash`, `shell`, `sh`
 
@@ -351,6 +351,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 changed functionality. Lint and test your code using jshint
 
 ## Release History
+ - 3.1.x Added `.jsx` file extension as alias for `js` (via @BendingBender, #79)
  - 3.0.1/2 Fixes for backward compatibility and regex cleanups (thanks to @anseki for suggestions, #77)
  - 3.0.0
    
