@@ -85,6 +85,8 @@ After build
    This tag is used to indicate the location in a file referenced using `@extend` where the block enclosed by `@extend` will be populated.
  - `@exclude` / `@endexclude`
    This will remove the enclosed block upon processing
+ - `@set VAR VAL`
+   This will will set an environment variable VAR to a value of VAL for later use in preprocessing.
  - `@echo VAR`
    This will include the environment variable VAR into your source
  - `@foreach $VAR in ARR` / `@endfor`
@@ -354,7 +356,7 @@ changed functionality. Lint and test your code using jshint
  - 3.1.x Added `.jsx` file extension as alias for `js` (via @BendingBender, #79)
  - 3.0.1/2 Fixes for backward compatibility and regex cleanups (thanks to @anseki for suggestions, #77)
  - 3.0.0
-   
+
    Breaking changes:
    - If a file requested by `@include` or `@extend` can not be found, `preprocess` will now throw by default
      with a possibility to opt in to the legacy behavior via the `fileNotFoundSilentFail` option (via @BendingBender, #35).
@@ -362,17 +364,17 @@ changed functionality. Lint and test your code using jshint
      versions.
    - The `srcDir` option was moved to the options object and now defaults to `process.cwd` instead of throwing by
      default (via @BendingBender, #68)
-   
+
    New functionality:
    - All block directives (ones that have a start and an end token, like `@if`/`@endif`) are now processed recursively (via @Frizi, #61)
    - Added hidden by default configuration blocks for `js` (via @mallowigi, #40) and `html` (via @Frizi, #66)
-   
+
    Fixes:
    - fixed `@exec` in files included via `@include` and `@extend` (via @BendingBender, #58)
    - changed `@extend` and `@exclude` html regex so that directives may appear more than once in one line (via @BendingBender, #36)
    - fixed multiple issues with coffescript syntax (via @BendingBender, #39)
    - fixed `@if` and `@foreach` to not require trailing whitespace (via @BendingBender, #74)
-   
+
  - 2.3.1 Fixed @echo and @exec directives to allow `-` and `*` characters, fixed @exec with multiple params (via @BendingBender, #21, #45, #51, #54).
  - 2.3.0 Added support for @include-static (via @BendingBender)
  - 2.2.0 Added support for @foreach and @extend (via @orionstein)
