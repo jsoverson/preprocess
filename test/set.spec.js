@@ -17,7 +17,7 @@ describe('@set directive shall be preprocessed', function () {
 
   describe('in javascript', function () {
     it('set and echo variables', function () {
-      input = "a/* @set test_variable_js 12345 */\n/*@echo test_variable_js */c";
+      input = "a/* @set test_variable_js 12345*/\n/*@echo test_variable_js */c";
       pp.preprocess(input, {}, 'js').should.equal("a\n12345c");
     });
   });
