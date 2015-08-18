@@ -80,6 +80,12 @@ describe('@exec directive shall be preprocessed', function () {
       }, 'js').should.equal("a\nHello Chuck Norris,Michael Jackson!\nc");
       helloSpy.should.have.been.called.with('Chuck Norris', 'Michael Jackson');
     });
+
+    it('and execute function with one parameter: a string with parenthesis in it (line)', function () {
+      input = 'a\n// @exec hello("ChuckNorris()")\nc';
+      pp.preprocess(input, {hello: helloSpy}, 'js').should.equal('a\nHello ChuckNorris()!\nc');
+      helloSpy.should.have.been.called.with('ChuckNorris()');
+    });
   });
 
   describe('in plain text files', function () {
