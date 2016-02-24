@@ -351,35 +351,39 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 changed functionality. Lint and test your code using jshint
 
 ## Release History
- - 3.1.x Added `.jsx` file extension as alias for `js` (via @BendingBender, #79)
+ - 3.1.x
+    - Added `.jsx` file extension as an alias for `js` (@BendingBender, #79)
+    - Added `.tsx` file extension as an alias for `js` (@rosendi, #100)
+    - Bumped XRegExp to v3
+
  - 3.0.1/2 Fixes for backward compatibility and regex cleanups (thanks to @anseki for suggestions, #77)
  - 3.0.0
 
    Breaking changes:
    - If a file requested by `@include` or `@extend` can not be found, `preprocess` will now throw by default
-     with a possibility to opt in to the legacy behavior via the `fileNotFoundSilentFail` option (via @BendingBender, #35).
-   - Fixed multiple issues with newlines (via @BendingBender, #8), this may result in output that differs from earlier
+     with a possibility to opt in to the legacy behavior via the `fileNotFoundSilentFail` option (@BendingBender, #35).
+   - Fixed multiple issues with newlines (@BendingBender, #8), this may result in output that differs from earlier
      versions.
    - The `srcDir` option was moved to the options object and now defaults to `process.cwd` instead of throwing by
-     default (via @BendingBender, #68)
+     default (@BendingBender, #68)
 
    New functionality:
-   - All block directives (ones that have a start and an end token, like `@if`/`@endif`) are now processed recursively (via @Frizi, #61)
-   - Added hidden by default configuration blocks for `js` (via @mallowigi, #40) and `html` (via @Frizi, #66)
+   - All block directives (ones that have a start and an end token, like `@if`/`@endif`) are now processed recursively (@Frizi, #61)
+   - Added hidden by default configuration blocks for `js` (@mallowigi, #40) and `html` (@Frizi, #66)
 
    Fixes:
-   - fixed `@exec` in files included via `@include` and `@extend` (via @BendingBender, #58)
-   - changed `@extend` and `@exclude` html regex so that directives may appear more than once in one line (via @BendingBender, #36)
-   - fixed multiple issues with coffescript syntax (via @BendingBender, #39)
-   - fixed `@if` and `@foreach` to not require trailing whitespace (via @BendingBender, #74)
+   - fixed `@exec` in files included via `@include` and `@extend` (@BendingBender, #58)
+   - changed `@extend` and `@exclude` html regex so that directives may appear more than once in one line (@BendingBender, #36)
+   - fixed multiple issues with coffescript syntax (@BendingBender, #39)
+   - fixed `@if` and `@foreach` to not require trailing whitespace (@BendingBender, #74)
 
- - 2.3.1 Fixed @echo and @exec directives to allow `-` and `*` characters, fixed @exec with multiple params (via @BendingBender, #21, #45, #51, #54).
- - 2.3.0 Added support for @include-static (via @BendingBender)
- - 2.2.0 Added support for @foreach and @extend (via @orionstein)
- - 2.1.1 Added support for .styl files via js regex (via @nsonnad)
+ - 2.3.1 Fixed @echo and @exec directives to allow `-` and `*` characters, fixed @exec with multiple params (@BendingBender, #21, #45, #51, #54).
+ - 2.3.0 Added support for @include-static (@BendingBender)
+ - 2.2.0 Added support for @foreach and @extend (@orionstein)
+ - 2.1.1 Added support for .styl files via js regex (@nsonnad)
  - 2.1.0 Added automatic support for numerous formats, merged @exec, hidden by default html tags, added simple directives
  - 2.0.0 Added ability to echo strings, added conditional comments, removed lodash, merged 17, 13, 15, 16
- - 1.2.0 Added processing for hash-style comments (via @marsch). Added more file aliases.
+ - 1.2.0 Added processing for hash-style comments (@marsch). Added more file aliases.
  - 1.1.0 Added deep inclusion, fixed sequential ifs
  - 1.0.1 Fixed multiple inline echo statements
  - 1.0.0 Pulled from grunt-preprocess to stand alone

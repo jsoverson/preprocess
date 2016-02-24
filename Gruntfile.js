@@ -7,13 +7,13 @@ module.exports = function(grunt) {
   grunt.initConfig({
     clean: {
       coverage: {
-        src: ['coverage']
+        src: 'coverage'
       },
       test: {
-        src: ['test/tmp']
+        src: 'test/tmp'
       },
       benchmark: {
-        src: ['benchmark/result.csv']
+        src: 'benchmark/result.csv'
       }
     },
     copy: {
@@ -35,28 +35,22 @@ module.exports = function(grunt) {
           reporter: 'spec'
         },
         src: ['test/**/*.spec.js']
+      }
+    },
+    mocha_istanbul: {
+      options: {
+        mask: '*.spec.js',
+        root: './lib',
+        check: {
+          lines: 95,
+          statements: 95
+        }
       },
-      'html-cov': {
+      coverage: {
+        src: 'test',
         options: {
-          reporter: 'html-cov',
-          quiet: true,
-          captureFile: 'coverage/coverage.html'
-        },
-        src: ['coverage/test/**/*.spec.js']
-      },
-      'mocha-lcov-reporter': {
-        options: {
-          reporter: 'mocha-lcov-reporter',
-          quiet: true,
-          captureFile: 'coverage/lcov.info'
-        },
-        src: ['coverage/test/**/*.spec.js']
-      },
-      'travis-cov': {
-        options: {
-          reporter: 'travis-cov'
-        },
-        src: ['coverage/test/**/*.spec.js']
+          reportFormats: ['lcov'] // html + lcov
+        }
       }
     },
     coveralls: {
@@ -100,9 +94,7 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('prepare-cov', ['clean:coverage', 'blanket', 'copy']);
-  grunt.registerTask('coverage',
-    ['prepare-cov', 'mochaTest:html-cov', 'mochaTest:mocha-lcov-reporter', 'mochaTest:travis-cov']);
+  grunt.registerTask('coverage', ['clean:coverage', 'mocha_istanbul:coverage']);
   grunt.registerTask('test', ['jshint', 'mochaTest:preprocess']);
   grunt.registerTask('dev', ['deps-ok', 'watch']);
   grunt.registerTask('default', ['test', 'coverage']);

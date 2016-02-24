@@ -1,18 +1,24 @@
+init:
+  - git config --global core.autocrlf false
+
 environment:
   matrix:
-  # node.js
   - nodejs_version: "0.10"
   - nodejs_version: "0.11"
   - nodejs_version: "0.12"
-  # io.js
-  - nodejs_version: "2"
+  - nodejs_version: "3"
+  - nodejs_version: "4"
+  - nodejs_version: "5"
+
+platform:
+  - x86
+  - x64
 
 install:
   # Get the latest stable version of Node.js or io.js
   - ps: Install-Product node $env:nodejs_version
   # install modules
-  - npm -g install npm@2
-  - set PATH=%APPDATA%\npm;%PATH%
+  - npm install -g npm
   - npm install
 
 # Post-install test scripts.
