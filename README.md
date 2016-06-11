@@ -270,7 +270,7 @@ Default: `html`
 
 The syntax type of source string to preprocess. There are 3 main syntax variants:
  - `html`, aliases: `xml`
- - `js`, aliases: `javascript`, `jsx`, `c`, `cc`, `cpp`, `cs`, `csharp`, `java`, `less`, `sass`, `scss`, `css`, `php`,
+ - `js`, aliases: `javascript`, `jsx`, `json`, `c`, `cc`, `cpp`, `cs`, `csharp`, `java`, `less`, `sass`, `scss`, `css`, `php`,
    `ts`, `tsx`, `peg`, `pegjs`, `jade`, `styl`
  - `coffee`, aliases: `bash`, `shell`, `sh`
 
