@@ -40,6 +40,11 @@ describe('@echo directive shall be preprocessed', function () {
       input = "a\n// @echo '-FOO*'\nc";
       pp.preprocess(input, {}, 'js').should.equal("a\n-FOO*\nc");
     });
+
+    it('and echo a blank string if undefined', function() {
+      input = "a/* @echo FINGERPRINT */c";
+      pp.preprocess(input, {}, 'js').should.equal("ac");
+    });
   });
 
   describe('in plain text files', function () {
@@ -51,6 +56,11 @@ describe('@echo directive shall be preprocessed', function () {
     it('and echo strings', function () {
       input = "a\n@echo '-FOO*'\nc";
       pp.preprocess(input, {}, 'simple').should.equal("a\n-FOO*\nc");
+    });
+
+    it('and echo a blank string if undefined', function() {
+      input = "a\n@echo FINGERPRINT\nc";
+      pp.preprocess(input, {}, 'simple').should.equal("a\n\nc");
     });
   });
 
@@ -68,6 +78,11 @@ describe('@echo directive shall be preprocessed', function () {
     it('and echo strings', function () {
       input = "a\n# @echo '-FOO*'\nc";
       pp.preprocess(input, {}, 'coffee').should.equal("a\n-FOO*\nc");
+    });
+
+    it('and echo a blank string if undefined', function() {
+      input = "a\n# @echo FINGERPRINT\nc";
+      pp.preprocess(input, {}, 'coffee').should.equal("a\n\nc");
     });
   });
 
@@ -92,6 +107,11 @@ describe('@echo directive shall be preprocessed', function () {
     it('without overreaching when string param contains `-` and `*` chars (js)', function () {
       input = "a/* @echo '-*' */b/* @echo '*-' */c";
       pp.preprocess(input, {FOO: 1, BAR: 2}, 'js').should.equal("a-*b*-c");
+    });
+
+    it('and echo blank strings if undefined', function() {
+      input = "a<!-- @echo FOO -->b<!-- @echo BAR -->c";
+      pp.preprocess(input, {}).should.equal("abc");
     });
   });
 
