@@ -1,6 +1,7 @@
 'use strict';
 
-var chai = require('chai'),
+var path = require('path'),
+  chai = require('chai'),
   pp = require('../lib/preprocess');
 
 chai.should();
@@ -66,9 +67,13 @@ describe('shall support multiple call signatures', function () {
   });
 
   describe('and support alias(dir path) options', function () {
-    it('and use alias option', function () {
+    it('and use alias option with relative path', function () {
       input = "a<!--@include @static.txt-->c";
       pp.preprocess(input, {}, { alias: { '@': 'test/fixtures/include/' } }).should.equal("a!bazqux!c");
+    });
+    it('and use alias option with absolute path', function () {
+      input = "a<!--@include @static.txt-->c";
+      pp.preprocess(input, {}, { alias: { '@': path.join(__dirname, 'fixtures/include/') } }).should.equal("a!bazqux!c");
     });
   });
 });
