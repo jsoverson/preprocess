@@ -64,4 +64,11 @@ describe('shall support multiple call signatures', function () {
       pp.preprocess(input, {}, {srcEol: '\r\n', srcDir: 'test/fixtures/include'}).should.equal("a\r\n!bazqux!\r\nc");
     });
   });
+
+  describe('and support alias(dir path) options', function () {
+    it('and use alias option', function () {
+      input = "a<!--@include @static.txt-->c";
+      pp.preprocess(input, {}, { alias: { '@': 'test/fixtures/include/' } }).should.equal("a!bazqux!c");
+    });
+  });
 });
