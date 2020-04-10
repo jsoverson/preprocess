@@ -274,6 +274,15 @@ The syntax type of source string to preprocess. There are 3 main syntax variants
    `ts`, `tsx`, `peg`, `pegjs`, `jade`, `styl`
  - `coffee`, aliases: `bash`, `shell`, `sh`
 
+##### options.supportSourceMaps
+Type: `Boolean`
+Default: `false`
+
+**Note:** Currently only the @if directive is supported.
+
+When set to `true`, the preprocessor will replace excluded lines with empty lines, by that maintaining correct line
+mapping when sourcemaps are generated. 
+
 ### preprocessFile(srcFile, destFile[, context[, callback[, options]]])
 
 Preprocesses a `sourceFile` and saves the result to `destFile`. Simple wrapper around `fs.readFile()` and `fs.writeFile()`.
