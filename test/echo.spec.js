@@ -65,8 +65,13 @@ describe('@echo directive shall be preprocessed', function () {
   });
 
   describe('in coffeescript', function () {
-    it('and resolve and echo variables', function () {
+    it('and resolve and echo variables (line)', function () {
       input = "a\n# @echo FINGERPRINT\nc";
+      pp.preprocess(input, {FINGERPRINT: '0xDEADBEEF'}, 'coffee').should.equal("a\n0xDEADBEEF\nc");
+    });
+
+    it('and resolve and echo variables (block)', function () {
+      input = "a\n### @echo FINGERPRINT ###\nc";
       pp.preprocess(input, {FINGERPRINT: '0xDEADBEEF'}, 'coffee').should.equal("a\n0xDEADBEEF\nc");
     });
 
