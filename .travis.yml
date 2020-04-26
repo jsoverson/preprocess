@@ -2,13 +2,7 @@ language: node_js
 node_js:
   - node
   - lts/*
-  - "10"
-  - "5"
-  - "4"
-  - "0.12"
-  - "0.11"
-  - "0.10"
-  - "iojs"
+  - 10
 install:
   - npm install
 script: "npm run-script ci"

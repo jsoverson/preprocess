@@ -96,7 +96,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask('coverage', ['clean:coverage', 'mocha_istanbul:coverage']);
   grunt.registerTask('test', ['jshint', 'mochaTest:preprocess']);
-  grunt.registerTask('dev', ['deps-ok', 'watch']);
   grunt.registerTask('default', ['test', 'coverage']);
   grunt.registerTask('ci', ['default', 'coveralls']);
 };
