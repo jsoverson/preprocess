@@ -351,6 +351,13 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 changed functionality. Lint and test your code using jshint
 
 ## Release History
+
+ - 3.2.0
+    - Fix npm incompatibility on CI (@pioug)
+    - Run CI with LTS and latest Node versions (@pioug)
+    - Support `if-else` statement (@hu9o, #121)
+    - Add JSON extension as alias for `js` (@jirikrepl, #111)
+
  - 3.1.0
     - Added `.jsx` file extension as an alias for `js` (@BendingBender, #79)
     - Added `.tsx` file extension as an alias for `js` (@rosendi, #100)
